@@ -53,7 +53,7 @@ var story = svg
 
 // Sub-Title
 svg.append('text')
-	.text('“How do you defeat terrorism? Don’t be terrorized.”')
+	.text('“How do you defeat terrorism? Don’t be terrorized.” - Salman Rushdie')
 	.attr("x", -14)
 	.attr("y", -5)
 	.style("font", "14px Times New Roman")
@@ -143,7 +143,8 @@ function draw() {
 			.style("font-size", "10px")
 			.style("color", tooltip_col)
 			.style("background-color", "rgba(1, 12, 22, 0.5)")
-			.style("padding", "5px");
+			.style("padding", "5px")
+			.style("border-radius", "5px");
 
 		d3.select("div.tooltip span")
 			.style("font-size", "5px")
