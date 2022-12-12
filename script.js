@@ -1,19 +1,19 @@
 const geoFile = "https://raw.githubusercontent.com/sandravizz/Analytical-System-Design-D3.js/main/Datasets/world_countries_geojson.geojson";
 const dataFile = "https://raw.githubusercontent.com/mohamadwaked/classico/master/p0017_dataset.csv";
 
-var back_color = "gray";
-var country_color = "green";
-var border_color = "black";
-var tooltip_col = "#e0e0e0";
+var back_color = "#ECF0F1";
+var country_color = "#2C3E50";
+var border_color = "#2C3E50";
+var tooltip_col = "white";
 var black_col = "#210612";
-var country_over_col = "#2d0b1f";
-var moderate_col = "#ff0066";
+var country_over_col = "#BDC3C7";
+var moderate_col = "#2C3E50";
 
 
 // Background
 d3.select("body")
 	.style("background", back_color)
-	.style("font-family", "Verdana, Geneva, sans-serif")
+	/* .style("font-family", "Arial, Geneva, sans-serif") */
 	.attr("height", "700px");
 
 // Margin
@@ -41,7 +41,32 @@ var svg = div_main.append('svg')
 	.append('g')
 	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-// store global objects here
+
+// Title
+var story = svg
+	.append('image')
+	.attr('xlink:href', "https://user-images.githubusercontent.com/5682399/207156647-5ad0cabf-72b9-4a50-86b2-4b374039a078.png")
+	.attr('width', 480)
+	.attr('height', 80)
+	.style("opacity", 1)
+	.attr("transform", "translate(-20,-80)");
+
+// Sub-Title
+svg.append('text')
+	.text('“How do you defeat terrorism? Don’t be terrorized.”')
+	.attr("x", -14)
+	.attr("y", -5)
+	.style("font", "14px Times New Roman")
+	.style("opacity", 0.9);
+
+var story = svg
+	.append('image')
+	.attr('width', 1160)
+	.attr('height', 170)
+	.style("opacity", 1)
+	.attr("transform", "translate(-20,-110)");
+
+// Store global objects here
 var map = {};
 var dataset = {};
 
@@ -93,7 +118,7 @@ function draw() {
 		.style("text-align", "center")
 		.style("width", "120px")
 		.style("height", "30px")
-		.style("font", "11px Tahoma")
+		.style("font", "11px Arial")
 		.style("color", tooltip_col)
 		.style("background-color", "none")
 		.style("border-radius", "9px")
