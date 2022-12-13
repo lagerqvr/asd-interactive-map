@@ -1,14 +1,28 @@
 const geoFile = "https://raw.githubusercontent.com/sandravizz/Analytical-System-Design-D3.js/main/Datasets/world_countries_geojson.geojson";
 const dataFile = "https://raw.githubusercontent.com/mohamadwaked/classico/master/p0017_dataset.csv";
 
-var back_color = "#ECF0F1";
 var country_color = "#2C3E50";
-var border_color = "#2C3E50";
-var tooltip_col = "white";
 var black_col = "#210612";
-var country_over_col = "#BDC3C7";
 var moderate_col = "#2C3E50";
 
+// -------------------------------------- color variables
+
+var main_col = "#64DD17";
+var title_col = "#64DD17";
+var subtitle_col = "#ffffff";
+var white_col = "#ffffff";
+var light_col = "#64DD17";
+var moderate_col = "#64DD17";
+var dark_col = "#af0259";
+var border_color = "#2C3E50";
+var back_color = "#ECF0F1";
+var black_col = "#ECF0F1";
+var country_over_col = "#BDC3C7";
+var tooltip_col = "white";
+var blue_col = "#4242ff";
+var button_over_col = "#010c16";
+
+// -------------------------------------- main settings
 
 // Background
 d3.select("body")
@@ -73,17 +87,28 @@ var dataset = {};
 Promise.all([
 
 	d3.json(geoFile),
-
+	d3.csv(dataFile, function (death) {
+		return {
+			serial: +death.serial,
+			region: death.collapsed_region,
+			cause: death.cause_of_death,
+			collap_cause: death.collapsed_cause,
+			coord: [+death.lon, +death.lat],
+			death: +death.total_death_missing,
+			date: parseTime(death.date),
+			random: +death.random
+		}
+	})
 
 ])
 	.then(function ([shapes, data]) {
 		map.features = shapes.features;
 		dataset = data;
-		/*	
-				console.log(dataset)
-				console.log(map.features)
-				console.log(map.features[10].properties.name)
-		*/
+
+		console.log(dataset)
+		console.log(map.features)
+		console.log(map.features[10].properties.name)
+
 		// Call the draw function 
 		draw();
 
@@ -97,10 +122,38 @@ const projection = d3.geoNaturalEarth1() //d3.geoNaturalEarth1() d3.geoMercator(
 const geoPath = d3.geoPath()
 	.projection(projection);
 
+// Area Scale
+var areaScale = d3.scaleSqrt()
+	.domain([0, 800])
+	.range([0.6, 10]);
+
+// Circle Scale
+var circleScale = d3.scaleSqrt()
+	.domain([0, 10])
+	.range([0, 5]);
+
+// Color Scale
+var colorScale = d3.scaleLinear()
+	.domain([0, 800])
+	.range([moderate_col, light_col]);
+
+// Opacity Scale
+var opacityScale = d3.scaleLinear()
+	.domain([0, 600])
+	.range([0.2, 0.9]);
+
+// Parse date
+var parseTime = d3.timeParse("%e-%b-%Y");
+console.log(parseTime("9-Feb-1917")); // test the formula
+
+// Formate date
+var formatTime = d3.timeFormat("%e %b %y");
+console.log(formatTime(new Date)); // test the formula
+
 function draw() {
 
 	console.log(map.features[0])
-	// country path 
+	// Country path 
 	svg.selectAll("path.country")
 		.data(map.features)
 		.enter().append("path")
@@ -109,6 +162,96 @@ function draw() {
 		.style("fill", country_color)
 		.style("stroke", border_color)
 		.style("stroke-width", "0.4");
+
+	// Main circles
+	svg.selectAll("circle.main_circles")
+		.data(dataset)
+		.enter().append("circle")
+		.attr("class", "main_circles")
+		.attr("cx", d => projection(d.coord)[0])
+		.attr("cy", d => projection(d.coord)[1])
+		.attr("r", d => areaScale(d.death))
+		.style("stroke", d => colorScale(d.death))
+		.style("fill", d => colorScale(d.death))
+		.attr("stroke-width", 0.4)
+		.style("stroke-opacity", d => opacityScale(d.death) + 0.1)
+		.style("fill-opacity", d => opacityScale(d.death) + 0.2);
+
+	// Contour circles
+	svg.selectAll("circle.contour_circles")
+		.data(dataset)
+		.enter().append("circle")
+		.attr("class", "contour_circles")
+		.attr("cx", d => projection(d.coord)[0])
+		.attr("cy", d => projection(d.coord)[1])
+		.attr("r", d => areaScale(d.death) + circleScale(5))
+		.style("stroke", white_col)
+		.style("fill", white_col)
+		.style("stroke-opacity", 0.085)
+		.attr("stroke-width", 0.2)
+		.style("fill-opacity", 0);
+
+	// -------------------------------------- dots tooltip
+
+	var tooltip = div_main.append("div")
+		.attr("class", "tooltip")
+		.style("opacity", 0)
+		.style("pointer-events", "none")
+		.style("position", "absolute")
+		.style("text-align", "center")
+		.style("width", "100px")
+		.style("height", "50px")
+		.style("font", "9px Tahoma")
+		.style("color", tooltip_col)
+		.style("background-color", "rgba(1, 12, 22, 0.5)")
+		.style("border-radius", "9px")
+		.style("padding", "4px")
+		.style("line-height", "1")
+		.style("display", "inline");
+
+	// move
+	var mousemove = function (event, d) {
+
+		tooltip
+			.transition()
+			.duration(200)
+			.style("opacity", 0.9);
+
+		tooltip
+			.html("<b>" + d.death + " </b> Dead or Missing <br/><span>-----------------------------</span></br> " + d.cause + "</br>" + formatTime(d.date))
+			.style("left", (event.pageX - 0) + "px")
+			.style("top", (event.pageY - 60) + "px");
+
+		d3.select("div.tooltip b")
+			.style("font-size", "10px")
+			.style("color", white_col)
+
+		d3.select("div.tooltip span")
+			.style("font-size", "5px")
+			.style("font-family", "Arial")
+			.style("color", "grey");
+
+		console.log(d3.select(this).attr('cx'), d3.select(this).attr('cy'));
+		console.log(d3.select(this).style('stroke-opacity'));
+
+	}
+
+	// leave
+	var mouseleave = function (d) {
+
+		tooltip
+			.transition()
+			.duration(2000)
+			.style("opacity", 0);
+
+	}
+
+	// call the tooltip
+	d3.selectAll("circle.contour_circles")
+		.on("mousemove", mousemove)
+		.on("mouseleave", mouseleave);
+
+	// -------------------------------------- country tooltip
 
 	var country_tooltip = div_main.append("div")
 		.attr("class", "country_tooltip")
