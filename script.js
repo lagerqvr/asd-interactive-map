@@ -1,5 +1,5 @@
 const geoFile = "https://raw.githubusercontent.com/sandravizz/Analytical-System-Design-D3.js/main/Datasets/world_countries_geojson.geojson";
-const dataFile = "https://raw.githubusercontent.com/mohamadwaked/classico/master/p0017_dataset.csv";
+const dataFile = "https://raw.githubusercontent.com/lagerqvr/asd-interactive-map/main/globalterrorismdb_0522dist%20-%202015-2020.csv";
 
 var country_color = "#2C3E50";
 var black_col = "#210612";
@@ -87,16 +87,16 @@ var dataset = {};
 Promise.all([
 
 	d3.json(geoFile),
-	d3.csv(dataFile, function (death) {
+	d3.csv(dataFile, function (attack) {
 		return {
-			serial: +death.serial,
-			region: death.collapsed_region,
-			cause: death.cause_of_death,
-			collap_cause: death.collapsed_cause,
-			coord: [+death.lon, +death.lat],
-			death: +death.total_death_missing,
-			date: parseTime(death.date),
-			random: +death.random
+			serial: +attack.eventid,
+			region: attack.region_txt,
+			attack_type: attack.attacktype1_txt,
+			collap_cause: attack.collapsed_cause,
+			coord: [+attack.longitude, +attack.latitude],
+			victims: +attack.nkill,
+			date: parseTime(attack.imonth.toString() + "/" + attack.iday.toString() + "/" + attack.iyear.toString()),
+			random: +attack.random
 		}
 	})
 
@@ -105,15 +105,14 @@ Promise.all([
 		map.features = shapes.features;
 		dataset = data;
 
-		console.log(dataset)
-		console.log(map.features)
-		console.log(map.features[10].properties.name)
+		console.log(data)
+		// console.log(map.features)
+		// console.log(map.features[10].properties.name)
 
 		// Call the draw function 
 		draw();
 
 	});
-
 const projection = d3.geoNaturalEarth1() //d3.geoNaturalEarth1() d3.geoMercator()
 	.scale(200)
 	.translate([(width / 2) - 140, (height / 2) + 10]);
@@ -143,12 +142,12 @@ var opacityScale = d3.scaleLinear()
 	.range([0.2, 0.9]);
 
 // Parse date
-var parseTime = d3.timeParse("%e-%b-%Y");
-console.log(parseTime("9-Feb-1917")); // test the formula
+var parseTime = d3.timeParse("%m/%d/%Y");
+console.log(parseTime("4/13/2015")); // test the formula
 
 // Formate date
 var formatTime = d3.timeFormat("%e %b %y");
-console.log(formatTime(new Date)); // test the formula
+// console.log(formatTime(new Date)); // test the formula
 
 function draw() {
 
@@ -170,12 +169,12 @@ function draw() {
 		.attr("class", "main_circles")
 		.attr("cx", d => projection(d.coord)[0])
 		.attr("cy", d => projection(d.coord)[1])
-		.attr("r", d => areaScale(d.death))
-		.style("stroke", d => colorScale(d.death))
-		.style("fill", d => colorScale(d.death))
+		.attr("r", d => areaScale(d.victims))
+		.style("stroke", d => colorScale(d.victims))
+		.style("fill", d => colorScale(d.victims))
 		.attr("stroke-width", 0.4)
-		.style("stroke-opacity", d => opacityScale(d.death) + 0.1)
-		.style("fill-opacity", d => opacityScale(d.death) + 0.2);
+		.style("stroke-opacity", d => opacityScale(d.victims) + 0.1)
+		.style("fill-opacity", d => opacityScale(d.victims) + 0.2);
 
 	// Contour circles
 	svg.selectAll("circle.contour_circles")
@@ -184,7 +183,7 @@ function draw() {
 		.attr("class", "contour_circles")
 		.attr("cx", d => projection(d.coord)[0])
 		.attr("cy", d => projection(d.coord)[1])
-		.attr("r", d => areaScale(d.death) + circleScale(5))
+		.attr("r", d => areaScale(d.victims) + circleScale(5))
 		.style("stroke", white_col)
 		.style("fill", white_col)
 		.style("stroke-opacity", 0.085)
@@ -218,7 +217,7 @@ function draw() {
 			.style("opacity", 0.9);
 
 		tooltip
-			.html("<b>" + d.death + " </b> Dead or Missing <br/><span>-----------------------------</span></br> " + d.cause + "</br>" + formatTime(d.date))
+			.html("<b>" + d.victims + " </b> Dead or Wounded <br/><span>-----------------------------</span></br> " + d.attack_type + "</br>" + formatTime(d.date))
 			.style("left", (event.pageX - 0) + "px")
 			.style("top", (event.pageY - 60) + "px");
 
