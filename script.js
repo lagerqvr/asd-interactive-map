@@ -22,18 +22,22 @@ var tooltip_col = "white";
 var blue_col = "#4242ff";
 var button_over_col = "#010c16";
 
-// -------------------------------------- main settings
+// -------------------------------------- Main settings
+
+const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
+const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+console.log(vw, vh)
+
+// Margin
+var margin = { top: 65, right: 50, bottom: 20, left: 50 },
+	width = vw - margin.left - margin.right,
+	height = vh - margin.top - margin.bottom;
 
 // Background
 d3.select("body")
 	.style("background", back_color)
 	/* .style("font-family", "Arial, Geneva, sans-serif") */
-	.attr("height", "700px");
-
-// Margin
-var margin = { top: 65, right: 50, bottom: 20, left: 50 },
-	width = 1550 - margin.left - margin.right,
-	height = 800 - margin.top - margin.bottom;
+	.attr("height", height);
 
 // -------------------------------------- div for svg
 
@@ -41,7 +45,7 @@ var div_main = d3.select("body")
 	.append("div")
 	.attr("id", "div_main")
 	// .style("border", "10px solid white")
-	.style("margin", "50px auto");
+	.style("margin", "30px auto");
 
 // -------------------------------------- svg board
 
@@ -150,7 +154,7 @@ var formatTime = d3.timeFormat("%e %b %y");
 // console.log(formatTime(new Date)); // test the formula
 
 const checkValue = (val) => {
-	if (!val == undefined || !val == null || !val == '') {
+	if (!val == undefined || !val == null || !val == '0') {
 		return val;
 	} else {
 		return '0';
@@ -308,7 +312,7 @@ function draw() {
 
 	}
 
-	// leave
+	// Leave
 	var country_mouseleave = function (d) {
 		console.log("off")
 		country_tooltip.transition()
@@ -324,7 +328,123 @@ function draw() {
 
 	}
 
-	// call the tooltip
+	// Menu
+	var controller = svg.append("g")
+		.classed("controller", true)
+		.attr("transform", "translate(1020,390)");
+
+	// Speed button
+	var legendTitle = controller.append("g")
+		.attr("transform", "translate(17,-70)");
+
+	// Speed text
+	legendTitle.append("text")
+		.attr("x", 0)
+		.attr("y", -80)
+		.html("Controls & Legend")
+		.style("fill", white_col)
+		.style("font-size", "10px")
+		.style("opacity", 0.6)
+		.attr("transform", "translate(-20,3)");
+
+
+	// Add size-legend
+	var sizeLegend = controller.append("g")
+		.attr("class", "sizelegend")
+		.attr("transform", `translate(${[0, 300]})`);
+
+
+	// Draw legend
+	sizeLegend.selectAll("g.sizeItem")
+		.data([1, 10, 50, 100, 200, 500, 1000])
+		.join("g")
+		.attr("class", "sizeItem")
+		.each(function (d, i) {
+			d3.select(this)
+				.append("circle")
+				.attr("cx", (i * 11) + 1)
+				.attr("cy", 0)
+				.attr("r", d => areaScale(d))
+				.style("fill", d => colorScale(d))
+				.style("fill-opacity", d => opacityScale(d))
+				.style("stroke", d => colorScale(d))
+				.style("stroke-opacity", 1)
+				.style("stroke-width", "0.4px");
+		});
+
+	sizeLegend
+		.append("text")
+		.attr("x", 0)
+		.attr("y", 20)
+		.text("1")
+		.style("font-size", "6.5px")
+		.style("font-family", "Arial")
+		.style("fill", main_col)
+		.style("alignment-baseline", "middle");
+
+	sizeLegend
+		.append("text")
+		.attr("x", 28)
+		.attr("y", 20)
+		.text("100")
+		.style("font-size", "6.5px")
+		.style("font-family", "Arial")
+		.style("fill", main_col)
+		.style("alignment-baseline", "middle");
+
+	sizeLegend
+		.append("text")
+		.attr("x", 58)
+		.attr("y", 20)
+		.text("1000")
+		.style("font-size", "7px")
+		.style("font-family", "Arial")
+		.style("fill", main_col)
+		.style("alignment-baseline", "middle");
+
+	sizeLegend
+		.append("text")
+		.attr("x", 102)
+		.attr("y", 20)
+		.text("Hot Area")
+		.style("font-size", "7px")
+		.style("font-family", "Arial")
+		.style("fill", main_col)
+		.style("alignment-baseline", "middle");
+
+
+	sizeLegend.append("circle")
+		.attr("cx", 115)
+		.attr("cy", 0)
+		.attr("r", areaScale(700))
+		.style("fill", "grey")
+		.style("fill-opacity", 0)
+		.style("stroke", "darkgrey")
+		.style("stroke-opacity", 1)
+		.style("stroke-width", "0.6px");
+
+
+	sizeLegend.append("text")
+		.attr("x", 0)
+		.attr("y", -42)
+		.style("font-size", "12px")
+		.style("font-family", "Arial")
+		.style("font-weight", "bold")
+		.style("fill", main_col)
+		.style("alignment-baseline", "middle")
+		.text("Area of circle represents the total");
+
+	sizeLegend.append("text")
+		.attr("x", 0)
+		.attr("y", -30)
+		.style("font-size", "9px")
+		.style("font-family", "Arial")
+		.style("fill", main_col)
+		.style("alignment-baseline", "middle")
+		.text("number of dead/wounded per incident");
+
+
+	// Call the tooltip
 	d3.selectAll("path.country")
 		.on("mousemove", country_mousemove)
 		.on("mouseout", country_mouseleave);
