@@ -94,7 +94,7 @@ Promise.all([
 			attack_type: attack.attacktype1_txt,
 			collap_cause: attack.collapsed_cause,
 			coord: [+attack.longitude, +attack.latitude],
-			victims: +attack.nkill,
+			victims: checkValue(attack.nkill + attack.nwound),
 			date: parseTime(attack.imonth.toString() + "/" + attack.iday.toString() + "/" + attack.iyear.toString()),
 			random: +attack.random
 		}
@@ -148,6 +148,15 @@ console.log(parseTime("4/13/2015")); // test the formula
 // Formate date
 var formatTime = d3.timeFormat("%e %b %y");
 // console.log(formatTime(new Date)); // test the formula
+
+const checkValue = (val) => {
+	console.log(typeof (val))
+	if (!val == undefined || !val == null || !val == '') {
+		return val;
+	} else {
+		return '0';
+	}
+}
 
 function draw() {
 
