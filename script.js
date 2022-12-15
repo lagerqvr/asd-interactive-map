@@ -331,7 +331,7 @@ function draw() {
 	// Menu
 	var controller = svg.append("g")
 		.classed("controller", true)
-		.attr("transform", "translate(1020,390)");
+		.attr("transform", "translate(1020,350)");
 
 	// Speed button
 	var legendTitle = controller.append("g")
@@ -448,4 +448,15 @@ function draw() {
 	d3.selectAll("path.country")
 		.on("mousemove", country_mousemove)
 		.on("mouseout", country_mouseleave);
+
+	// (Arcada) Logo
+	var myimage = controller
+		.append("a")
+		.attr("href", "https://github.com/lagerqvr/asd-interactive-map")
+		.append('image')
+		.attr('xlink:href', "https://upload.wikimedia.org/wikipedia/fi/8/8e/Arcada_logo.png")
+		.attr('width', 200)
+		.attr('height', 100)
+		.style("opacity", 1)
+		.attr("transform", "translate(-10,320)");
 }
