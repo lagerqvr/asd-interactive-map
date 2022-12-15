@@ -150,7 +150,6 @@ var formatTime = d3.timeFormat("%e %b %y");
 // console.log(formatTime(new Date)); // test the formula
 
 const checkValue = (val) => {
-	console.log(typeof (val))
 	if (!val == undefined || !val == null || !val == '') {
 		return val;
 	} else {
