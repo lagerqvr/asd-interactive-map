@@ -156,6 +156,18 @@ console.log(parseTime("4/13/2015")); // test the formula
 var formatTime = d3.timeFormat("%e %b %y");
 // console.log(formatTime(new Date)); // test the formula
 
+// Axis scale
+var timeScale = d3.scaleTime()
+	.domain([parseTime("1-Jan-2014"), parseTime("26-Jun-2019")])
+	.range([0, width - 150]);
+
+// Define axis
+var timeAxis = d3.axisBottom(timeScale)
+	.ticks(7)
+	.tickSizeInner(10)
+	.tickSizeOuter(0)
+	.tickPadding(35);
+
 const checkValue = (val) => {
 	if (!val == undefined || !val == null || !val == '0') {
 		return val;
@@ -222,6 +234,7 @@ function draw() {
 		.style("padding", "4px")
 		.style("line-height", "1")
 		.style("display", "inline");
+
 
 	// move
 	var mousemove = function (event, d) {
@@ -334,7 +347,7 @@ function draw() {
 	// Menu
 	var controller = svg.append("g")
 		.classed("controller", true)
-		.attr("transform", "translate(1020,390)");
+		.attr("transform", "translate(1020,350)");
 
 	// Speed button
 	var legendTitle = controller.append("g")
@@ -451,5 +464,16 @@ function draw() {
 	d3.selectAll("path.country")
 		.on("mousemove", country_mousemove)
 		.on("mouseout", country_mouseleave);
-			
+
+	// (Arcada) Logo
+	var myimage = controller
+		.append("a")
+		.attr("href", "https://github.com/lagerqvr/asd-interactive-map")
+		.append('image')
+		.attr('xlink:href', "https://upload.wikimedia.org/wikipedia/fi/8/8e/Arcada_logo.png")
+		.attr('width', 200)
+		.attr('height', 100)
+		.style("opacity", 1)
+		.attr("transform", "translate(-10,320)");
+
 }
