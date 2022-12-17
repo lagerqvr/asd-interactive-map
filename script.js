@@ -15,7 +15,7 @@ var light_col = "#64DD17";
 var moderate_col = "#64DD17";
 var dark_col = "#af0259";
 var border_color = "#2C3E50";
-var back_color = "#ECF0F1";
+var back_color = "gray";
 var black_col = "#ECF0F1";
 var country_over_col = "#BDC3C7";
 var tooltip_col = "white";
@@ -92,16 +92,19 @@ Promise.all([
 
 	d3.json(geoFile),
 	d3.csv(dataFile, function (attack) {
-		return {
-			serial: +attack.eventid,
-			region: attack.region_txt,
-			attack_type: attack.attacktype1_txt,
-			collap_cause: attack.collapsed_cause,
-			coord: [+attack.longitude, +attack.latitude],
-			victims: checkValue(attack.nkill + attack.nwound),
-			date: parseTime(attack.imonth.toString() + "/" + attack.iday.toString() + "/" + attack.iyear.toString()),
-			random: +attack.random
+		if(!isNaN(attack.latitude)) {
+			return {
+				serial: +attack.eventid,
+				region: attack.region_txt,
+				attack_type: attack.attacktype1_txt,
+				collap_cause: attack.collapsed_cause,
+				coord: [+attack.longitude, +attack.latitude],
+				victims: checkValue(attack.nkill + attack.nwound),
+				date: parseTime(attack.imonth.toString() + "/" + attack.iday.toString() + "/" + attack.iyear.toString()),
+				random: +attack.random
+			}
 		}
+		
 	})
 
 ])
@@ -376,7 +379,7 @@ function draw() {
 		.append("text")
 		.attr("x", 0)
 		.attr("y", 20)
-		.text("1")
+		.text("0-1")
 		.style("font-size", "6.5px")
 		.style("font-family", "Arial")
 		.style("fill", main_col)
@@ -448,4 +451,5 @@ function draw() {
 	d3.selectAll("path.country")
 		.on("mousemove", country_mousemove)
 		.on("mouseout", country_mouseleave);
+			
 }
