@@ -92,7 +92,7 @@ Promise.all([
 
 	d3.json(geoFile),
 	d3.csv(dataFile, function (attack) {
-		if(!isNaN(attack.latitude)) {
+		if (!isNaN(attack.latitude)) {
 			return {
 				serial: +attack.eventid,
 				region: attack.region_txt,
@@ -104,7 +104,7 @@ Promise.all([
 				random: +attack.random
 			}
 		}
-		
+
 	})
 
 ])
@@ -112,7 +112,6 @@ Promise.all([
 		map.features = shapes.features;
 		dataset = data;
 
-		console.log(data)
 		// console.log(map.features)
 		// console.log(map.features[10].properties.name)
 
@@ -150,23 +149,11 @@ var opacityScale = d3.scaleLinear()
 
 // Parse date
 var parseTime = d3.timeParse("%m/%d/%Y");
-console.log(parseTime("4/13/2015")); // test the formula
+console.log(parseTime("1/1/2015")); // test the formula
 
 // Formate date
 var formatTime = d3.timeFormat("%e %b %y");
 // console.log(formatTime(new Date)); // test the formula
-
-// Axis scale
-var timeScale = d3.scaleTime()
-	.domain([parseTime("1-Jan-2014"), parseTime("26-Jun-2019")])
-	.range([0, width - 150]);
-
-// Define axis
-var timeAxis = d3.axisBottom(timeScale)
-	.ticks(7)
-	.tickSizeInner(10)
-	.tickSizeOuter(0)
-	.tickPadding(35);
 
 const checkValue = (val) => {
 	if (!val == undefined || !val == null || !val == '0') {
@@ -177,6 +164,16 @@ const checkValue = (val) => {
 }
 
 function draw() {
+	// Axis scale
+	var timeScale = d3.scaleTime()
+		.domain([dataset[0].date, dataset[dataset.length - 1].date])
+		.range([0, width - 150]);
+	// Define axis
+	var timeAxis = d3.axisBottom(timeScale)
+		.ticks(7)
+		.tickSizeInner(10)
+		.tickSizeOuter(0)
+		.tickPadding(35);
 
 	console.log(map.features[0])
 	// Country path 
@@ -475,5 +472,43 @@ function draw() {
 		.attr('height', 100)
 		.style("opacity", 1)
 		.attr("transform", "translate(-10,320)");
+
+	// Cover the lower area with rect
+	var rect = svg.append("rect")
+		.attr("x", 0)
+		.attr("y", 850)
+		.attr("width", width)
+		.attr("height", 200)
+		.style("fill", back_color)
+		.style("opacity", 0.0);
+
+	// -------------------------------------- timeline
+
+	// Draw the Axies
+	svg.append("g").classed("axe", true)
+		.attr("transform", "translate(0 , 910)")
+		.call(timeAxis);
+
+	// axis formatting
+
+	// format the domain
+	d3.selectAll("g.axe .domain, g.axe g.tick line")
+		.style("stroke", main_col)
+		.style("opacity", 0.2);
+	//.style("stroke-dasharray", "3 6");
+
+	// make centered ticks
+	d3.selectAll("g.axe g.tick line")
+		.attr("y1", -3)
+		.attr("y2", 4)
+		.style("opacity", 0.8)
+		.style("stroke", main_col);
+
+	// adjust font size and opacity
+	d3.selectAll("g.axe g.tick text")
+		.style("font-size", "8px")
+		.style("color", main_col)
+		.style("opacity", 1);
+
 
 }
