@@ -15,7 +15,7 @@ var light_col = "#64DD17";
 var moderate_col = "#64DD17";
 var dark_col = "#af0259";
 var border_color = "#2C3E50";
-var back_color = "gray";
+var back_color = "white";
 var black_col = "#ECF0F1";
 var country_over_col = "#BDC3C7";
 var tooltip_col = "white";
@@ -101,7 +101,7 @@ Promise.all([
 				coord: [+attack.longitude, +attack.latitude],
 				victims: checkValue(attack.nkill + attack.nwound),
 				date: parseTime(attack.imonth.toString() + "/" + attack.iday.toString() + "/" + attack.iyear.toString()),
-				random: +attack.random
+				random: Math.random()
 			}
 		}
 
@@ -111,9 +111,6 @@ Promise.all([
 	.then(function ([shapes, data]) {
 		map.features = shapes.features;
 		dataset = data;
-
-		// console.log(map.features)
-		// console.log(map.features[10].properties.name)
 
 		// Call the draw function 
 		draw();
@@ -147,9 +144,18 @@ var opacityScale = d3.scaleLinear()
 	.domain([0, 600])
 	.range([0.2, 0.9]);
 
+// Projections Opacity Scale
+var projOpacScale = d3.scaleLinear()
+	.domain([0, 1000])
+	.range([0.1, 0.9]); // when using colors the scale has to start at 0.4
+
+// Projection Color Scale
+var projColorScale = d3.scaleLinear()
+	.domain([0, 300])
+	.range(["grey", white_col]);
+
 // Parse date
 var parseTime = d3.timeParse("%m/%d/%Y");
-console.log(parseTime("1/1/2015")); // test the formula
 
 // Formate date
 var formatTime = d3.timeFormat("%e %b %y");
@@ -168,6 +174,7 @@ function draw() {
 	var timeScale = d3.scaleTime()
 		.domain([dataset[0].date, dataset[dataset.length - 1].date])
 		.range([0, width - 150]);
+
 	// Define axis
 	var timeAxis = d3.axisBottom(timeScale)
 		.ticks(7)
@@ -175,7 +182,6 @@ function draw() {
 		.tickSizeOuter(0)
 		.tickPadding(35);
 
-	console.log(map.features[0])
 	// Country path 
 	svg.selectAll("path.country")
 		.data(map.features)
@@ -344,7 +350,7 @@ function draw() {
 	// Menu
 	var controller = svg.append("g")
 		.classed("controller", true)
-		.attr("transform", "translate(1020,350)");
+		.attr("transform", "translate(1820,350)");
 
 	// Speed button
 	var legendTitle = controller.append("g")
@@ -425,7 +431,6 @@ function draw() {
 		.style("fill", main_col)
 		.style("alignment-baseline", "middle");
 
-
 	sizeLegend.append("circle")
 		.attr("cx", 115)
 		.attr("cy", 0)
@@ -435,7 +440,6 @@ function draw() {
 		.style("stroke", "darkgrey")
 		.style("stroke-opacity", 1)
 		.style("stroke-width", "0.6px");
-
 
 	sizeLegend.append("text")
 		.attr("x", 0)
@@ -455,7 +459,6 @@ function draw() {
 		.style("fill", main_col)
 		.style("alignment-baseline", "middle")
 		.text("number of dead/wounded per incident");
-
 
 	// Call the tooltip
 	d3.selectAll("path.country")
@@ -509,6 +512,165 @@ function draw() {
 		.style("font-size", "8px")
 		.style("color", main_col)
 		.style("opacity", 1);
+
+	// -------------------------------------- circles on timeline
+
+	// Draw the circles on timeline
+	svg.selectAll("circle.time_circles")
+		.data(dataset)  //.filter(d => d.tens == "1910-1920")
+		.enter().append("circle")
+		.classed("time_circles", true)
+		.attr("cx", d => timeScale(d.date))
+		.attr("cy", d => 870 + ((d.random) *80))
+		.attr("r", d => areaScale(d.victims))
+		//.style("stroke", white_col)
+		.attr("stroke-width", 0.4)
+		.style("stroke-opacity", d => opacityScale(d.victims) + 0.1)
+		//.style("fill", white_col)
+		.style("fill-opacity", d => opacityScale(d.victims))
+		.style("fill", d => colorScale(d.victims))
+		.style("stroke", d => colorScale(d.victims));
+
+
+	// -------------------------------------- projections on timeline
+
+	// Draw the projections on timeline
+
+	var proj_stroke = "0.05px";
+
+	svg.selectAll("line.time_lines")
+		.data(dataset)  //.filter(d => d.tens == "1910-1920")
+		.enter().append("line")
+		.classed("time_lines", true)
+		.attr("x1", d => timeScale(d.date))
+		.attr("y1", d => 870 + ((d.random) *80))
+		.attr("x2", function (d) { return projection(d.coord)[0]; })
+		.attr("y2", function (d) { return projection(d.coord)[1]; })
+		.style("stroke", d => projColorScale(d.victims))
+		.style("stroke-opacity", d => projOpacScale(d.victims))
+		.style("stroke-width", proj_stroke)
+
+	// -------------------------------------- play function
+
+	// play function
+
+	var play = function (d) {
+
+		// hide button while playing
+		d3.select(this)
+			.transition()
+			.duration(2000)
+			.style("opacity", 0)
+			.transition()
+			.duration(2000)
+			.delay(tot_delay + 1000)
+			.style("opacity", 1);
+
+		d3.select(".start_circle")
+			.transition()
+			.duration(2000)
+			.attr("r", 2)
+			.attr("stroke-width", 1)
+			.style("fill-opacity", 1)
+			.transition()
+			.duration(2000)
+			.delay(tot_delay + 1000)
+			.attr("r", 10)
+			.attr("stroke-width", 0.7)
+			.style("fill-opacity", 0);
+
+		// play projection lines
+		d3.selectAll("line.time_lines")
+			.style("stroke-width", "0px")
+			.style("stroke-opacity", d => projOpacScale(d.death))
+			.each(function (d, i) {
+				d3.select(this)
+					.transition()
+					.duration(3000)
+					.delay(i * in_delay)
+					.style("stroke-width", proj_stroke)
+
+			});
+
+		// play main circles
+		d3.selectAll("circle.main_circles")
+			.attr("r", 0)
+			.each(function (d, i) {
+				d3.select(this)
+					.transition()
+					.duration(main_dots_time)
+					.delay(i * in_delay)
+					.attr("r", d => areaScale(d.death))
+
+			});
+
+		// play countour circles
+		d3.selectAll("circle.contour_circles")
+			.attr("r", 0)
+			.each(function (d, i) {
+				d3.select(this)
+					.transition()
+					.duration(contour_dots_time1)
+					.delay(i * in_delay)
+					.style("stroke", white_col)
+					.attr("stroke-width", 0.8)
+					.style("stroke-opacity", 0.9)
+					.style("fill-opacity", 0.7)
+					.attr("r", d => areaScale(d.death) + circleScale(0))
+					.transition()
+					.duration(contour_dots_time2)
+					.delay(contour_dots_delay)
+					.attr("r", d => areaScale(d.death) + circleScale(5))
+					.style("stroke-opacity", 0.085)
+					.attr("stroke-width", 0.2)
+					.style("fill-opacity", 0)
+			});
+
+		// play time circles
+		d3.selectAll("circle.time_circles")
+			.attr("r", d => Math.random())
+			.attr("cx", d => timeScale(d.date))
+			.attr("cy", d => 570 + (d.random * 80))
+			.attr("stroke-width", 1)
+			.style("stroke-opacity", 0)
+			.style("fill-opacity", 0)
+			.each(function (d, i) {
+				d3.select(this)
+					.transition()
+					.duration(3000)
+					.delay(i * in_delay)
+					.attr("cx", d => timeScale(d.date))
+					.attr("cy", d => 570 + (d.random * 80))
+					.attr("r", d => areaScale(d.death))
+					.attr("stroke-width", 0.4)
+					.style("stroke-opacity", d => opacityScale(d.death) + 0.1)
+					.style("fill-opacity", d => opacityScale(d.death));
+			});
+
+	};
+
+	// -------------------------------------- Play Button Functions
+
+	// over function
+	var over = function (d) {
+		d3.select(this)
+			//.style("stroke", white_col)
+			.style("fill", main_col)
+	};
+
+	// move function
+	var move = function (d) {
+		d3.select(this)
+			//.style("stroke", white_col)
+			.style("fill", main_col)
+	};
+
+	// leave function	
+	var leave = function (d) {
+		d3.select(this)
+			.style("fill", white_col)
+		//.style("stroke", main_col)
+	};
 
 
 }
