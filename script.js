@@ -1,12 +1,9 @@
 const geoFile = "https://raw.githubusercontent.com/sandravizz/Analytical-System-Design-D3.js/main/Datasets/world_countries_geojson.geojson";
 const dataFile = "https://raw.githubusercontent.com/lagerqvr/asd-interactive-map/main/globalterrorismdb_0522dist%20-%202015-2020.csv";
 
-var country_color = "#2C3E50";
-var black_col = "#210612";
-var moderate_col = "#2C3E50";
-
 // -------------------------------------- color variables
 
+var country_color = "#2C3E50";
 var main_col = "#64DD17";
 var title_col = "#64DD17";
 var subtitle_col = "#ffffff";
@@ -38,6 +35,14 @@ d3.select("body")
 	.style("background", back_color)
 	/* .style("font-family", "Arial, Geneva, sans-serif") */
 	.attr("height", height);
+
+// Time variables
+var in_delay = 1;
+var tot_delay = 5505 * in_delay;
+var main_dots_time = 3000;
+var contour_dots_time1 = 600;
+var contour_dots_time2 = 1000;
+var contour_dots_delay = 3;
 
 // -------------------------------------- div for svg
 
@@ -112,11 +117,10 @@ Promise.all([
 		map.features = shapes.features;
 		dataset = data;
 
-		// Call the draw function 
 		draw();
 
 	});
-const projection = d3.geoNaturalEarth1() //d3.geoNaturalEarth1() d3.geoMercator()
+const projection = d3.geoNaturalEarth1()
 	.scale(200)
 	.translate([(width / 2) - 140, (height / 2) + 10]);
 
@@ -159,7 +163,6 @@ var parseTime = d3.timeParse("%m/%d/%Y");
 
 // Formate date
 var formatTime = d3.timeFormat("%e %b %y");
-// console.log(formatTime(new Date)); // test the formula
 
 const checkValue = (val) => {
 	if (!val == undefined || !val == null || !val == '0') {
@@ -237,7 +240,6 @@ function draw() {
 		.style("padding", "4px")
 		.style("line-height", "1")
 		.style("display", "inline");
-
 
 	// move
 	var mousemove = function (event, d) {
@@ -366,12 +368,10 @@ function draw() {
 		.style("opacity", 0.6)
 		.attr("transform", "translate(-20,3)");
 
-
 	// Add size-legend
 	var sizeLegend = controller.append("g")
 		.attr("class", "sizelegend")
 		.attr("transform", `translate(${[0, 300]})`);
-
 
 	// Draw legend
 	sizeLegend.selectAll("g.sizeItem")
@@ -480,7 +480,7 @@ function draw() {
 	var rect = svg.append("rect")
 		.attr("x", 0)
 		.attr("y", 850)
-		.attr("width", width)
+		.attr("width", width-200)
 		.attr("height", 200)
 		.style("fill", back_color)
 		.style("opacity", 0.0);
@@ -521,7 +521,7 @@ function draw() {
 		.enter().append("circle")
 		.classed("time_circles", true)
 		.attr("cx", d => timeScale(d.date))
-		.attr("cy", d => 870 + ((d.random) *80))
+		.attr("cy", d => 870 + ((d.random) * 80))
 		.attr("r", d => areaScale(d.victims))
 		//.style("stroke", white_col)
 		.attr("stroke-width", 0.4)
@@ -543,7 +543,7 @@ function draw() {
 		.enter().append("line")
 		.classed("time_lines", true)
 		.attr("x1", d => timeScale(d.date))
-		.attr("y1", d => 870 + ((d.random) *80))
+		.attr("y1", d => 870 + ((d.random) * 80))
 		.attr("x2", function (d) { return projection(d.coord)[0]; })
 		.attr("y2", function (d) { return projection(d.coord)[1]; })
 		.style("stroke", d => projColorScale(d.victims))
@@ -582,7 +582,7 @@ function draw() {
 		// play projection lines
 		d3.selectAll("line.time_lines")
 			.style("stroke-width", "0px")
-			.style("stroke-opacity", d => projOpacScale(d.death))
+			.style("stroke-opacity", d => projOpacScale(d.victims))
 			.each(function (d, i) {
 				d3.select(this)
 					.transition()
@@ -600,7 +600,7 @@ function draw() {
 					.transition()
 					.duration(main_dots_time)
 					.delay(i * in_delay)
-					.attr("r", d => areaScale(d.death))
+					.attr("r", d => areaScale(d.victims))
 
 			});
 
@@ -616,11 +616,11 @@ function draw() {
 					.attr("stroke-width", 0.8)
 					.style("stroke-opacity", 0.9)
 					.style("fill-opacity", 0.7)
-					.attr("r", d => areaScale(d.death) + circleScale(0))
+					.attr("r", d => areaScale(d.victims) + circleScale(0))
 					.transition()
 					.duration(contour_dots_time2)
 					.delay(contour_dots_delay)
-					.attr("r", d => areaScale(d.death) + circleScale(5))
+					.attr("r", d => areaScale(d.victims) + circleScale(5))
 					.style("stroke-opacity", 0.085)
 					.attr("stroke-width", 0.2)
 					.style("fill-opacity", 0)
@@ -630,7 +630,7 @@ function draw() {
 		d3.selectAll("circle.time_circles")
 			.attr("r", d => Math.random())
 			.attr("cx", d => timeScale(d.date))
-			.attr("cy", d => 570 + (d.random * 80))
+			.attr("cy", d => 870 + (d.random * 80))
 			.attr("stroke-width", 1)
 			.style("stroke-opacity", 0)
 			.style("fill-opacity", 0)
@@ -640,14 +640,16 @@ function draw() {
 					.duration(3000)
 					.delay(i * in_delay)
 					.attr("cx", d => timeScale(d.date))
-					.attr("cy", d => 570 + (d.random * 80))
-					.attr("r", d => areaScale(d.death))
+					.attr("cy", d =>870 + (d.random * 80))
+					.attr("r", d => areaScale(d.victims))
 					.attr("stroke-width", 0.4)
-					.style("stroke-opacity", d => opacityScale(d.death) + 0.1)
-					.style("fill-opacity", d => opacityScale(d.death));
+					.style("stroke-opacity", d => opacityScale(d.victims) + 0.1)
+					.style("fill-opacity", d => opacityScale(d.victims));
 			});
 
 	};
+
+	//play();
 
 	// -------------------------------------- Play Button Functions
 
@@ -672,5 +674,142 @@ function draw() {
 		//.style("stroke", main_col)
 	};
 
+	// -------------------------------- Speed Buttons Functions
 
+	// 1x
+	// down functions
+	var speedDownLow = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+
+		d3.selectAll("circle.medium_button, circle.high_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "1px")
+			.style("stroke-opacity", 1);
+
+		in_delay = 4;
+		tot_delay = 5505 * in_delay;
+
+		p1 = p1_1;
+
+		array1 = p1 + p2 + p3;
+
+		joinLines1
+			.transition()
+			.duration(500)
+			.attr("points", array1)
+	};
+
+	// 2x
+	// down functions
+	var speedDownMedium = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+		d3.selectAll("circle.low_button, circle.high_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "1px")
+			.style("stroke-opacity", 1);
+
+		in_delay = 2;
+		tot_delay = 5505 * in_delay;
+
+		p1 = p1_2;
+
+		array1 = p1 + p2 + p3;
+
+		joinLines1
+			.transition()
+			.duration(500)
+			.attr("points", array1)
+	};
+
+	// 4x
+	// down functions
+	var speedDownHigh = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+		d3.selectAll("circle.low_button, circle.medium_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "1px")
+			.style("stroke-opacity", 1);
+
+		in_delay = 1;
+		tot_delay = 5505 * in_delay;
+
+		p1 = p1_3;
+
+		array1 = p1 + p2 + p3;
+
+		joinLines1
+			.transition()
+			.duration(500)
+			.attr("points", array1)
+	};
+
+			// add g element button
+			var startButton = svg.append("g")
+			.classed("start", true)
+			.attr("transform", "translate(-4,904.5)");
+	
+			// start circle
+			startButton.append("circle")
+			.classed("start_circle", true)
+			.attr("cx", 4.5)
+			.attr("cy", 6)
+			.attr("r", 10)
+			.style("stroke", blue_col)
+			.attr("stroke-width", 0.7)
+			.style("fill", white_col)
+			.style("fill-opacity", 0);
+	
+			// start button
+			startButton.append("polygon")
+			.classed("start_polygon", true)
+			.attr("points", "0,0 12,6 0,12")
+			//.style("stroke", blue_col)
+			.attr("stroke-width", 0.7)
+			.style("fill", white_col)
+			.style("opacity", 1)
+			.attr("transform", "translate(0,0)")
+			.on("mousedown", play)
+			.on("mouseover", over)
+			.on("mouseleave", leave)
+			.on("mousemove", move);
+			
+			// start text
+			startButton.append("text")
+			.classed("start_text", true)
+			.attr("x", -4)
+			.attr("y", -7)
+			.text("Timelapse ")
+			.style("fill", main_col)
+			.style("font-size", "8px")
+			.attr("transform", "translate(0,-40)");
 }
