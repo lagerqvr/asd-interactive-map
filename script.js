@@ -19,11 +19,44 @@ var tooltip_col = "white";
 var blue_col = "#4242ff";
 var button_over_col = "#010c16";
 
+var regions_name = [
+	'Middle East & North Africa',
+	'Western Europe',
+	'South Asia',
+	'Central America & Caribbean',
+	'Southeast Asia',
+	'Sub-Saharan Africa',
+	'Eastern Europe',
+	'North America',
+	'Australasia & Oceania',
+	'South America',
+	'Central Asia',
+	'East Asia'
+];
+
+var regions_cols = [
+	/*
+	"violet", //violet 1
+	"blue", //blue 2
+	"pink", //pink 3
+	"yellow", //yellow 4
+	"darkgreen", //darkgreen 5
+	"orange", //orange 6  
+	"green", //green 7
+	"lightblue", //lightblue 8
+	"grey", //grey 9
+	"brown", //brown 10
+	"red", // 11
+	"black" // 12
+	*/
+	'#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#42d4f4', '#f032e6', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8'
+];
+
 // -------------------------------------- Main settings
 
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-console.log(vw, vh)
+//console.log(vw, vh)
 
 // Margin
 var margin = { top: 65, right: 50, bottom: 20, left: 50 },
@@ -92,15 +125,16 @@ var story = svg
 // Store global objects here
 var map = {};
 var dataset = {};
-
 Promise.all([
 
 	d3.json(geoFile),
 	d3.csv(dataFile, function (attack) {
 		if (!isNaN(attack.latitude)) {
+
 			return {
+				regions: attack.region_txt,
 				serial: +attack.eventid,
-				region: attack.region_txt,
+				country: attack.country_txt,
 				attack_type: attack.attacktype1_txt,
 				collap_cause: attack.collapsed_cause,
 				coord: [+attack.longitude, +attack.latitude],
@@ -116,7 +150,7 @@ Promise.all([
 	.then(function ([shapes, data]) {
 		map.features = shapes.features;
 		dataset = data;
-
+		//console.log(dataset)
 		draw();
 
 	});
@@ -157,6 +191,11 @@ var projOpacScale = d3.scaleLinear()
 var projColorScale = d3.scaleLinear()
 	.domain([0, 300])
 	.range(["grey", white_col]);
+
+// Regions color scale	
+var regionScale = d3.scaleOrdinal()
+	.domain(regions_name)
+	.range(regions_cols);
 
 // Parse date
 var parseTime = d3.timeParse("%m/%d/%Y");
@@ -263,8 +302,8 @@ function draw() {
 			.style("font-family", "Arial")
 			.style("color", "grey");
 
-		console.log(d3.select(this).attr('cx'), d3.select(this).attr('cy'));
-		console.log(d3.select(this).style('stroke-opacity'));
+		//console.log(d3.select(this).attr('cx'), d3.select(this).attr('cy'));
+		//console.log(d3.select(this).style('stroke-opacity'));
 
 	}
 
@@ -303,7 +342,6 @@ function draw() {
 
 	// move
 	var country_mousemove = function (event, d) {
-		console.log(event)
 		country_tooltip
 			.transition()
 			.duration(100)
@@ -335,7 +373,6 @@ function draw() {
 
 	// Leave
 	var country_mouseleave = function (d) {
-		console.log("off")
 		country_tooltip.transition()
 			.delay(2000)
 			.duration(200)
@@ -460,6 +497,45 @@ function draw() {
 		.style("alignment-baseline", "middle")
 		.text("number of dead/wounded per incident");
 
+	var regionLegend = controller.append("g")
+		.attr("class", "region_legend")
+		.attr("transform", "translate(10,55)");
+
+
+	// draw legend
+	regionLegend.selectAll("g.regions")
+		.data(regions_name)
+		.join("g")
+		.attr("class", "regions")
+		.each(function (d, i) {
+			d3.select(this)
+				.append("circle")
+				.classed("region_circle" + i, true)
+				.attr("cy", i * 15)
+				.attr("cx", 0)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+				.style("fill-opacity", 1)
+				.style("stroke", white_col)
+				.style("stroke-opacity", 0.8)
+				.style("stroke-width", 1.5);
+			//	.on("mouseover", overGeneral2)
+			//	.on("mouseleave", leaveGeneral2);
+			//.style("stroke-dasharray", "1 1");
+
+			d3.select(this)
+				.append("text")
+				.attr("y", i * 15)
+				.attr("x", 5)
+				.text(d)
+				.style("font-size", "8px")
+				.style("fill", main_col)
+				.style("alignment-baseline", "middle")
+				//.style("text-align", "left")
+				//.style("direction", "rtl")
+				.attr("transform", `translate(11, 1)`);
+		});
+
 	// Call the tooltip
 	d3.selectAll("path.country")
 		.on("mousemove", country_mousemove)
@@ -480,7 +556,7 @@ function draw() {
 	var rect = svg.append("rect")
 		.attr("x", 0)
 		.attr("y", 850)
-		.attr("width", width-200)
+		.attr("width", width - 200)
 		.attr("height", 200)
 		.style("fill", back_color)
 		.style("opacity", 0.0);
@@ -640,7 +716,7 @@ function draw() {
 					.duration(3000)
 					.delay(i * in_delay)
 					.attr("cx", d => timeScale(d.date))
-					.attr("cy", d =>870 + (d.random * 80))
+					.attr("cy", d => 870 + (d.random * 80))
 					.attr("r", d => areaScale(d.victims))
 					.attr("stroke-width", 0.4)
 					.style("stroke-opacity", d => opacityScale(d.victims) + 0.1)
@@ -773,43 +849,51 @@ function draw() {
 			.attr("points", array1)
 	};
 
-			// add g element button
-			var startButton = svg.append("g")
-			.classed("start", true)
-			.attr("transform", "translate(-4,904.5)");
-	
-			// start circle
-			startButton.append("circle")
-			.classed("start_circle", true)
-			.attr("cx", 4.5)
-			.attr("cy", 6)
-			.attr("r", 10)
-			.style("stroke", blue_col)
-			.attr("stroke-width", 0.7)
-			.style("fill", white_col)
-			.style("fill-opacity", 0);
-	
-			// start button
-			startButton.append("polygon")
-			.classed("start_polygon", true)
-			.attr("points", "0,0 12,6 0,12")
-			//.style("stroke", blue_col)
-			.attr("stroke-width", 0.7)
-			.style("fill", white_col)
-			.style("opacity", 1)
-			.attr("transform", "translate(0,0)")
-			.on("mousedown", play)
-			.on("mouseover", over)
-			.on("mouseleave", leave)
-			.on("mousemove", move);
-			
-			// start text
-			startButton.append("text")
-			.classed("start_text", true)
-			.attr("x", -4)
-			.attr("y", -7)
-			.text("Timelapse ")
-			.style("fill", main_col)
-			.style("font-size", "8px")
-			.attr("transform", "translate(0,-40)");
+	// add g element button
+	var startButton = svg.append("g")
+		.classed("start", true)
+		.attr("transform", "translate(-4,904.5)");
+
+	// start circle
+	startButton.append("circle")
+		.classed("start_circle", true)
+		.attr("cx", 4.5)
+		.attr("cy", 6)
+		.attr("r", 10)
+		.style("stroke", blue_col)
+		.attr("stroke-width", 0.7)
+		.style("fill", white_col)
+		.style("fill-opacity", 0);
+
+	// start button
+	startButton.append("polygon")
+		.classed("start_polygon", true)
+		.attr("points", "0,0 12,6 0,12")
+		//.style("stroke", blue_col)
+		.attr("stroke-width", 0.7)
+		.style("fill", white_col)
+		.style("opacity", 1)
+		.attr("transform", "translate(0,0)")
+		.on("mousedown", play)
+		.on("mouseover", over)
+		.on("mouseleave", leave)
+		.on("mousemove", move);
+
+	// start text
+	startButton.append("text")
+		.classed("start_text", true)
+		.attr("x", -4)
+		.attr("y", -7)
+		.text("Timelapse ")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(0,-40)");
+
+	d3.selectAll("circle.main_circles")
+		.style("stroke", d => regionScale(d.regions))
+		.style("fill", d => regionScale(d.regions));
+
+	d3.selectAll("circle.time_circles")
+		.style("stroke", d => regionScale(d.regions))
+		.style("fill", d => regionScale(d.regions));
 }
