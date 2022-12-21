@@ -4,20 +4,18 @@ const dataFile = "https://raw.githubusercontent.com/lagerqvr/asd-interactive-map
 // -------------------------------------- color variables
 
 var country_color = "#2C3E50";
-var main_col = "#64DD17";
-var title_col = "#64DD17";
-var subtitle_col = "#ffffff";
+var main_col = "green";
 var white_col = "#ffffff";
 var light_col = "#64DD17";
 var moderate_col = "#64DD17";
 var dark_col = "#af0259";
 var border_color = "#2C3E50";
-var back_color = "white";
-var black_col = "#ECF0F1";
+var back_color = "lightgray";
 var country_over_col = "#BDC3C7";
 var tooltip_col = "white";
 var blue_col = "#4242ff";
 var button_over_col = "#010c16";
+var back_col = "white";
 
 var regions_name = [
 	'Middle East & North Africa',
@@ -35,21 +33,11 @@ var regions_name = [
 ];
 
 var regions_cols = [
-	/*
-	"violet", //violet 1
-	"blue", //blue 2
-	"pink", //pink 3
-	"yellow", //yellow 4
-	"darkgreen", //darkgreen 5
-	"orange", //orange 6  
-	"green", //green 7
-	"lightblue", //lightblue 8
-	"grey", //grey 9
-	"brown", //brown 10
-	"red", // 11
-	"black" // 12
-	*/
-	'#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#42d4f4', '#f032e6', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8'
+
+	'#e6194B', '#3cb44b', '#ffe119',
+	'#4363d8', '#f58231', '#42d4f4',
+	'#f032e6', '#fabed4', '#469990',
+	'#dcbeff', '#9A6324', '#fffac8'
 ];
 
 // -------------------------------------- Main settings
@@ -60,8 +48,8 @@ const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeig
 
 // Margin
 var margin = { top: 65, right: 50, bottom: 20, left: 50 },
-	width = vw - margin.left - margin.right,
-	height = vh - margin.top - margin.bottom;
+	width = 2000 - margin.left - margin.right,
+	height = 1040 - margin.top - margin.bottom;
 
 // Background
 d3.select("body")
@@ -70,7 +58,7 @@ d3.select("body")
 	.attr("height", height);
 
 // Time variables
-var in_delay = 1;
+var in_delay = 16;
 var tot_delay = 5505 * in_delay;
 var main_dots_time = 3000;
 var contour_dots_time1 = 600;
@@ -122,38 +110,55 @@ var story = svg
 	.style("opacity", 1)
 	.attr("transform", "translate(-20,-110)");
 
-// Store global objects here
-var map = {};
-var dataset = {};
-Promise.all([
-
-	d3.json(geoFile),
-	d3.csv(dataFile, function (attack) {
-		if (!isNaN(attack.latitude)) {
-
-			return {
-				regions: attack.region_txt,
-				serial: +attack.eventid,
-				country: attack.country_txt,
-				attack_type: attack.attacktype1_txt,
-				collap_cause: attack.collapsed_cause,
-				coord: [+attack.longitude, +attack.latitude],
-				victims: checkValue(attack.nkill + attack.nwound),
-				date: parseTime(attack.imonth.toString() + "/" + attack.iday.toString() + "/" + attack.iyear.toString()),
-				random: Math.random()
-			}
+const btn = document.querySelector('#btn');
+const radioButtons = document.querySelectorAll('input[name="year_val"]');
+btn.addEventListener("click", () => {
+	let selectedYear = 2015;
+	for (const radioButton of radioButtons) {
+		if (radioButton.checked) {
+			selectedYear = radioButton.value;
+			break;
 		}
+	}
+	// show the output:
+	output.innerText = selectedYear ? `You selected ${selectedYear}` : `You haven't selected any year`;
 
-	})
 
-])
-	.then(function ([shapes, data]) {
-		map.features = shapes.features;
-		dataset = data;
-		//console.log(dataset)
-		draw();
 
-	});
+	// Store global objects here
+	var map = {};
+	var dataset = {};
+	Promise.all([
+
+		d3.json(geoFile),
+		d3.csv(dataFile, function (attack) {
+			if (!isNaN(attack.latitude) && attack.iyear == selectedYear) {
+
+				return {
+					regions: attack.region_txt,
+					serial: +attack.eventid,
+					country: attack.country_txt,
+					attack_type: attack.attacktype1_txt,
+					collap_cause: attack.collapsed_cause,
+					coord: [+attack.longitude, +attack.latitude],
+					victims: checkValue(attack.nkill + attack.nwound),
+					date: parseTime(attack.imonth.toString() + "/" + attack.iday.toString() + "/" + attack.iyear.toString()),
+					random: Math.random()
+				}
+			}
+
+		})
+
+	])
+		.then(function ([shapes, data]) {
+			map.features = shapes.features;
+			dataset = data;
+			//console.log(dataset)
+			draw(map, dataset);
+
+		});
+
+});
 const projection = d3.geoNaturalEarth1()
 	.scale(200)
 	.translate([(width / 2) - 140, (height / 2) + 10]);
@@ -190,7 +195,7 @@ var projOpacScale = d3.scaleLinear()
 // Projection Color Scale
 var projColorScale = d3.scaleLinear()
 	.domain([0, 300])
-	.range(["grey", white_col]);
+	.range(["gray", white_col]);
 
 // Regions color scale	
 var regionScale = d3.scaleOrdinal()
@@ -211,7 +216,18 @@ const checkValue = (val) => {
 	}
 }
 
-function draw() {
+function draw(map, dataset) {
+	d3.select("svg").remove();
+
+	var svg = div_main.append('svg')
+		.attr('width', width + margin.left + margin.right)
+		.attr('height', height + margin.top + margin.bottom)
+		.style("display", "block")
+		.style("margin", "0px auto")
+		.style("background", back_color)
+		.append('g')
+		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
 	// Axis scale
 	var timeScale = d3.scaleTime()
 		.domain([dataset[0].date, dataset[dataset.length - 1].date])
@@ -400,7 +416,7 @@ function draw() {
 		.attr("x", 0)
 		.attr("y", -80)
 		.html("Controls & Legend")
-		.style("fill", white_col)
+		.style("fill", main_col)
 		.style("font-size", "10px")
 		.style("opacity", 0.6)
 		.attr("transform", "translate(-20,3)");
@@ -519,9 +535,6 @@ function draw() {
 				.style("stroke", white_col)
 				.style("stroke-opacity", 0.8)
 				.style("stroke-width", 1.5);
-			//	.on("mouseover", overGeneral2)
-			//	.on("mouseleave", leaveGeneral2);
-			//.style("stroke-dasharray", "1 1");
 
 			d3.select(this)
 				.append("text")
@@ -531,8 +544,6 @@ function draw() {
 				.style("font-size", "8px")
 				.style("fill", main_col)
 				.style("alignment-baseline", "middle")
-				//.style("text-align", "left")
-				//.style("direction", "rtl")
 				.attr("transform", `translate(11, 1)`);
 		});
 
@@ -574,7 +585,6 @@ function draw() {
 	d3.selectAll("g.axe .domain, g.axe g.tick line")
 		.style("stroke", main_col)
 		.style("opacity", 0.2);
-	//.style("stroke-dasharray", "3 6");
 
 	// make centered ticks
 	d3.selectAll("g.axe g.tick line")
@@ -593,20 +603,17 @@ function draw() {
 
 	// Draw the circles on timeline
 	svg.selectAll("circle.time_circles")
-		.data(dataset)  //.filter(d => d.tens == "1910-1920")
+		.data(dataset)
 		.enter().append("circle")
 		.classed("time_circles", true)
 		.attr("cx", d => timeScale(d.date))
 		.attr("cy", d => 870 + ((d.random) * 80))
 		.attr("r", d => areaScale(d.victims))
-		//.style("stroke", white_col)
 		.attr("stroke-width", 0.4)
 		.style("stroke-opacity", d => opacityScale(d.victims) + 0.1)
-		//.style("fill", white_col)
 		.style("fill-opacity", d => opacityScale(d.victims))
 		.style("fill", d => colorScale(d.victims))
 		.style("stroke", d => colorScale(d.victims));
-
 
 	// -------------------------------------- projections on timeline
 
@@ -615,7 +622,7 @@ function draw() {
 	var proj_stroke = "0.05px";
 
 	svg.selectAll("line.time_lines")
-		.data(dataset)  //.filter(d => d.tens == "1910-1920")
+		.data(dataset)
 		.enter().append("line")
 		.classed("time_lines", true)
 		.attr("x1", d => timeScale(d.date))
@@ -772,7 +779,7 @@ function draw() {
 			.style("stroke-width", "1px")
 			.style("stroke-opacity", 1);
 
-		in_delay = 4;
+		in_delay = 16;
 		tot_delay = 5505 * in_delay;
 
 		p1 = p1_1;
@@ -804,7 +811,7 @@ function draw() {
 			.style("stroke-width", "1px")
 			.style("stroke-opacity", 1);
 
-		in_delay = 2;
+		in_delay = 8;
 		tot_delay = 5505 * in_delay;
 
 		p1 = p1_2;
@@ -836,7 +843,7 @@ function draw() {
 			.style("stroke-width", "1px")
 			.style("stroke-opacity", 1);
 
-		in_delay = 1;
+		in_delay = 4;
 		tot_delay = 5505 * in_delay;
 
 		p1 = p1_3;
@@ -848,6 +855,284 @@ function draw() {
 			.duration(500)
 			.attr("points", array1)
 	};
+
+	// -------------------------------- on/off Projection Functions
+
+	// on Projection
+	// down functions
+	var onProj = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "0.05px")
+			.style("stroke-opacity", 0.8);
+
+		d3.select("circle.off_proj")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "0.05px")
+			.style("stroke-opacity", 0.15);
+
+
+		p2 = p2_1;
+
+		array1 = p1 + p2 + p3;
+
+		joinLines1
+			.transition()
+			.duration(500)
+			.attr("points", array1)
+
+		proj_stroke = "0.05px";
+		d3.selectAll("line.time_lines")
+			.style("stroke-width", proj_stroke)
+
+	};
+
+	// off Projection
+	// down functions
+	var offProj = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+		d3.select("circle.on_proj")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "1px")
+			.style("stroke-opacity", 1);
+
+		proj_stroke = "0px";
+
+		d3.selectAll("line.time_lines")
+			.style("stroke-width", proj_stroke)
+			.style("stroke-opacity", d => projOpacScale(d.victims));
+
+		p2 = p2_2;
+
+		array1 = p1 + p2 + p3;
+
+		joinLines1
+			.transition()
+			.duration(500)
+			.attr("points", array1)
+
+	};
+
+	// -------------------------------- on/off Categories Buttons Functions
+
+	// on
+	// down functions
+	var onDown = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+		d3.select("circle.off_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "0.05px")
+			.style("stroke-opacity", 0.15);
+
+		regionLegend
+			.transition()
+			.duration(1000)
+			.delay(600)
+			.style("opacity", 1)
+
+		catButton
+			.transition()
+			.duration(1000)
+			.style("opacity", 1)
+
+		d3.select(".region_button")
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+		d3.select(".cause_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col);
+
+		d3.selectAll("circle.main_circles")
+			.style("stroke", d => regionScale(d.regions))
+			.style("fill", d => regionScale(d.regions));
+
+		d3.selectAll("circle.time_circles")
+			.style("stroke", d => regionScale(d.regions))
+			.style("fill", d => regionScale(d.regions));
+
+		p3 = p3_1;
+
+		array1 = p1 + p2 + p3;
+
+		joinLines1
+			.transition()
+			.duration(500)
+			.attr("points", array1);
+
+		p4 = p4_1;
+
+		array2 = p3 + p4 + p5 + p6;
+
+		joinLines2
+			.transition()
+			.duration(500)
+			.delay(500)
+			.attr("points", array2)
+			.style("opacity", 1);
+
+		d3.selectAll("line.time_lines")
+			.style("stroke", d => regionScale(d.regions))
+
+		regionLegend.raise();
+
+	};
+
+	// off
+	// down functions
+	var offDown = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+		d3.select("circle.on_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "1px")
+			.style("stroke-opacity", 1);
+
+		d3.selectAll(".join_line")
+			.transition()
+			.duration(500)
+			.style("opacity", 0)
+		//.style("visibility", "hidden");
+
+		catButton
+			.transition()
+			.duration(1000)
+			.style("opacity", 0)
+		//.style("visibility", "hidden");
+
+		d3.select(".region_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col);
+
+		regionLegend
+			.transition()
+			.duration(1000)
+			.style("opacity", 0);
+
+		d3.selectAll("circle.main_circles")
+			.style("stroke", d => colorScale(d.victims))
+			.style("fill", d => colorScale(d.victims));
+
+
+		d3.selectAll("circle.time_circles")
+			.style("stroke", d => colorScale(d.victims))
+			.style("fill", d => colorScale(d.victims));
+
+		p3 = p3_2;
+
+		array1 = p1 + p2 + p3;
+
+		joinLines1
+			.transition()
+			.duration(500)
+			.attr("points", array1);
+
+		joinLines2
+			.transition()
+			.duration(200)
+			.style("opacity", 0)
+
+		d3.selectAll("line.time_lines")
+			.style("stroke", d => projColorScale(d.victims))
+
+
+	};
+
+	// -------------------------------- region / cause Buttons Functions
+
+	// region
+	// down functions
+	var regionDown = function (d) {
+		d3.select(this)
+			.transition()
+			.duration(1000)
+			.style("fill", button_over_col)
+			.style("stroke", white_col)
+			.style("stroke-width", "2px")
+			.style("stroke-opacity", 0.8);
+
+		d3.select(".cause_button")
+			.transition()
+			.duration(1000)
+			.style("fill", back_col)
+			.style("stroke", moderate_col)
+			.style("stroke-width", "1px")
+			.style("stroke-opacity", 1);
+
+		regionLegend
+			.transition()
+			.duration(1000)
+			.delay(500)
+			.style("opacity", 1)
+
+
+		d3.selectAll("circle.main_circles")
+			.style("stroke", d => regionScale(d.regions))
+			.style("fill", d => regionScale(d.regions));
+
+		d3.selectAll("circle.time_circles")
+			.style("stroke", d => regionScale(d.regions))
+			.style("fill", d => regionScale(d.regions));
+
+		p4 = p4_1;
+
+		array2 = p3 + p4 + p5 + p6;
+
+		joinLines2
+			.transition()
+			.duration(500)
+			.attr("points", array2);
+
+		d3.selectAll("line.time_lines")
+			.style("stroke", d => regionScale(d.regions))
+		regionLegend.raise();
+
+	};
+
+
+	// -------------------------------- on/off Categories Buttons Functions
 
 	// add g element button
 	var startButton = svg.append("g")
@@ -869,9 +1154,8 @@ function draw() {
 	startButton.append("polygon")
 		.classed("start_polygon", true)
 		.attr("points", "0,0 12,6 0,12")
-		//.style("stroke", blue_col)
 		.attr("stroke-width", 0.7)
-		.style("fill", white_col)
+		.style("fill", "black")
 		.style("opacity", 1)
 		.attr("transform", "translate(0,0)")
 		.on("mousedown", play)
@@ -889,11 +1173,307 @@ function draw() {
 		.style("font-size", "8px")
 		.attr("transform", "translate(0,-40)");
 
-	d3.selectAll("circle.main_circles")
-		.style("stroke", d => regionScale(d.regions))
-		.style("fill", d => regionScale(d.regions));
+	// -------------------------------------- end circle
 
-	d3.selectAll("circle.time_circles")
-		.style("stroke", d => regionScale(d.regions))
-		.style("fill", d => regionScale(d.regions));
+	// end circle
+	svg.append("circle")
+		.classed("end_circle", true)
+		.attr("cx", timeScale(parseTime("26-Jun-2019")))
+		.attr("cy", 610)
+		.attr("r", 2)
+		.style("stroke", blue_col)
+		.style("fill", white_col);
+
+
+	// -------------------------------------- speed button
+
+	// speed button
+	var speedButton = controller.append("g")
+		.classed("speed_button", true)
+		.attr("transform", "translate(17,-70)");
+
+	// speed text
+	speedButton.append("text")
+		.classed("start_text", true)
+		.attr("x", 0)
+		.attr("y", 0)
+		.text("Timelapse :")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-20,3)");
+
+	speedButton.append("text")
+		.classed("start_text", true)
+		.attr("x", 62)
+		.attr("y", 0)
+		.text("1X")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-20,3)");
+
+
+	speedButton.append("text")
+		.classed("start_text", true)
+		.attr("x", 92)
+		.attr("y", 0)
+		.text("2X")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-20,3)");
+
+	speedButton.append("text")
+		.classed("start_text", true)
+		.attr("x", 122)
+		.attr("y", 0)
+		.text("4X")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-20,3)");
+
+	// speed circles
+	// low
+	speedButton.append("circle")
+		.classed("low_button", true)
+		.attr("cx", 34.5)
+		.attr("cy", 0)
+		.attr("r", 5)
+		.style("stroke", white_col)
+		.style("stroke-width", "2px")
+		.style("fill", back_col)
+		.style("fill-opacity", 1)
+		.style("stroke-opacity", 0.8)
+		.on("mousedown", speedDownLow);
+	// medium
+	speedButton.append("circle")
+		.classed("medium_button", true)
+		.attr("cx", 64)
+		.attr("cy", 0)
+		.attr("r", 5)
+		.style("fill", button_over_col)
+		.style("fill-opacity", 1)
+		.style("fill", button_over_col)
+		.style("stroke", moderate_col)
+
+		.attr("stroke-width", 0.7)
+		.style("stroke-opacity", 1)
+		.on("mousedown", speedDownMedium);
+
+	// high
+	speedButton.append("circle")
+		.classed("high_button", true)
+		.attr("cx", 94)
+		.attr("cy", 0)
+		.attr("r", 5)
+		.style("stroke", moderate_col)
+		.attr("stroke-width", 0.7)
+		.style("fill", back_col)
+		.style("fill-opacity", 1)
+		.on("mousedown", speedDownHigh);
+
+	// -------------------------------------- projections ON / OFF Button
+	// projection button
+	var projectionButton = controller.append("g")
+		.classed("proj_button", true)
+		.attr("transform", "translate(0,-30)");
+
+	// title
+	projectionButton.append("text")
+		.classed("proj_text", true)
+		.attr("x", 0)
+		.attr("y", -8)
+		.text("Projections :")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-2,0)");
+
+	projectionButton.append("text")
+		.classed("proj_text", true)
+		.attr("x", 118)
+		.attr("y", -8)
+		.text("OFF")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-2,0)");
+
+	projectionButton.append("text")
+		.classed("proj_text", true)
+		.attr("x", 75)
+		.attr("y", -8)
+		.text("ON")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-2,0)");
+
+	// switch circles
+	// ON
+	projectionButton.append("circle")
+		.classed("on_proj", true)
+		.attr("cx", 61)
+		.attr("cy", -11)
+		.attr("r", 6)
+		.style("stroke", white_col)
+		.style("stroke-width", "0.0005px")
+		.style("stroke-opacity", 0.8)
+		.style("fill", back_col)
+		.style("fill-opacity", 1)
+		.on("mousedown", onProj);
+
+	// OFF
+	projectionButton.append("circle")
+		.classed("off_proj", true)
+		.attr("cx", 105)
+		.attr("cy", -11)
+		.attr("r", 6)
+		.style("fill", button_over_col)
+		.style("fill-opacity", 1)
+		.style("stroke", moderate_col)
+		.style("stroke-width", 1)
+		.style("stroke-opacity", 0.8)
+		.on("mousedown", offProj);
+
+	// -------------------------------------- switch ON / OFF Button
+	// switch button
+	var switchButton = controller.append("g")
+		.classed("cat_button", true)
+		.attr("transform", "translate(0,0)");
+
+	// title
+	switchButton.append("text")
+		.classed("cat_text", true)
+		.attr("x", 0)
+		.attr("y", -8)
+		.html("Categories :")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-2,0)");
+
+	switchButton.append("text")
+		.classed("cat_text", true)
+		.attr("x", 74)
+		.attr("y", -8)
+		.html("ON")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-2,0)");
+
+	switchButton.append("text")
+		.classed("cat_text", true)
+		.attr("x", 116)
+		.attr("y", -8)
+		.html("OFF")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-2,0)");
+
+	// switch circles
+	// ON
+	switchButton.append("circle")
+		.classed("on_button", true)
+		.attr("cx", 59)
+		.attr("cy", -11)
+		.attr("r", 7)
+		.style("stroke", moderate_col)
+		.attr("stroke-width", "1px")
+		.attr("stroke-opacity", 1)
+		.style("fill", back_col)
+		.style("fill-opacity", 1)
+		.on("mousedown", onDown);
+
+	// OFF
+	switchButton.append("circle")
+		.classed("off_button", true)
+		.attr("cx", 102)
+		.attr("cy", -11)
+		.attr("r", 7)
+		.style("fill", button_over_col)
+		.style("fill-opacity", 1)
+		.style("stroke", white_col)
+		.style("stroke-width", 2)
+		.style("stroke-opacity", 0.8)
+		.on("mousedown", offDown);
+
+	// -------------------------------------- by Region / Cause switch button
+	// categories button
+	var catButton = controller.append("g")
+		.classed("switch_button", true)
+		.attr("transform", "translate(0,30)");
+
+
+	// cause text
+	catButton.append("text")
+		.classed("region_cause_text", true)
+		.attr("x", 51)
+		.attr("y", -8)
+		.text("Region")
+		.style("fill", main_col)
+		.style("font-size", "8px")
+		.attr("transform", "translate(-2,0)");
+
+
+
+	// region circle
+	catButton.append("circle")
+		.classed("region_button", true)
+		.attr("cx", 38)
+		.attr("cy", -11)
+		.attr("r", 6)
+		.style("stroke", white_col)
+		.style("stroke-width", "2px")
+		.style("stroke-opacity", 0.8)
+		.style("fill", back_col)
+		.style("fill-opacity", 1)
+		.on("mousedown", regionDown);
+	// -------------------------------------- join lines
+
+	// join lines array
+	var p1_1 = "51.5,-70 ";
+	var p1_2 = "81,-70 ";
+	var p1_3 = "111,-70 ";
+	var p2_1 = "62,-41 ";
+	var p2_2 = "105,-41 ";
+	var p3_1 = "59,-11 ";
+	var p3_2 = "102,-11 ";
+	var p4_1 = "39,19 ";
+	var p4_2 = "94,19 ";
+	var p5 = "10,55 ";
+	var p6 = "10,190";
+
+	var p1 = p1_1;
+	var p2 = p2_1;
+	var p3 = p3_2;
+	var p4 = p4_1;
+
+	var array1 = p1 + p2 + p3;
+	var array2 = p3_1 + p4 + p5 + p6;
+
+	// polyline1
+	var joinLines1 = controller
+		.append("polyline")
+		.classed("join_line", true)
+		.attr("points", array1)
+		.style("fill", "none")
+		.style("stroke", white_col)
+		.style("stroke-width", 0.5)
+		.lower()
+		.attr("transform", "translate(0,0)");
+
+	// polyline1
+	var joinLines2 = controller
+		.append("polyline")
+		.classed("join_line", true)
+		.attr("points", array2)
+		.style("fill", "none")
+		.style("stroke", white_col)
+		.style("stroke-width", 0.5)
+		.lower()
+		.attr("transform", "translate(0,0)");
+	/*
+		d3.selectAll("circle.main_circles")
+			.style("stroke", d => regionScale(d.regions))
+			.style("fill", d => regionScale(d.regions));
+	
+		d3.selectAll("circle.time_circles")
+			.style("stroke", d => regionScale(d.regions))
+			.style("fill", d => regionScale(d.regions));
+	*/
 }
