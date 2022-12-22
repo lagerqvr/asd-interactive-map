@@ -214,13 +214,38 @@ function draw(map, dataset) {
 	d3.select("svg").remove();
 
 	var svg = div_main.append('svg')
-		.attr('width', width + margin.left + margin.right)
-		.attr('height', height + margin.top + margin.bottom)
-		.style("display", "block")
-		.style("margin", "0px auto")
-		.style("background", back_color)
-		.append('g')
-		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+	.attr('width', width + margin.left + margin.right)
+	.attr('height', height + margin.top + margin.bottom)
+	.style("display", "block")
+	.style("margin", "0px auto")
+	// .style("border", "2px solid grey") 
+	.style("background", back_color)
+	.append('g')
+	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+// Title
+var story = svg
+	.append('image')
+	.attr('xlink:href', "https://user-images.githubusercontent.com/5682399/207156647-5ad0cabf-72b9-4a50-86b2-4b374039a078.png")
+	.attr('width', 480)
+	.attr('height', 80)
+	.style("opacity", 1)
+	.attr("transform", "translate(-20,-80)");
+
+// Sub-Title
+svg.append('text')
+	.text('“How do you defeat terrorism? Don’t be terrorized.” - Salman Rushdie')
+	.attr("x", -14)
+	.attr("y", -5)
+	.style("font", "14px Times New Roman")
+	.style("opacity", 0.9);
+
+var story = svg
+	.append('image')
+	.attr('width', 1160)
+	.attr('height', 170)
+	.style("opacity", 1)
+	.attr("transform", "translate(-20,-110)");
 
 	// Axis scale
 	var timeScale = d3.scaleTime()
@@ -1450,5 +1475,444 @@ function draw(map, dataset) {
 	regionLegend
 		.style("opacity", 0);
 	joinLines2
-		.style("opacity", 0)
+		.style("opacity", 0);
+
+	// Filters for the regions
+
+	// ---------- filter 1
+
+	var checked_1 = 1;
+
+	var regionFilter1 = function (d) {
+		if (checked_1 == 1) {
+
+			checked_1 = 0
+			d3.select("circle.region_circle0")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[0])
+				.style("visibility", "hidden");
+
+		}
+
+		else {
+			checked_1 = 1;
+			d3.select("circle.region_circle0")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[0])
+				.style("visibility", "visible");
+
+		}
+
+	}; // --------- end of filter 1
+
+	// ---------- filter 2
+
+	var checked_2 = 1;
+
+	var regionFilter2 = function (d) {
+		if (checked_2 == 1) {
+
+			checked_2 = 0
+			d3.select("circle.region_circle1")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[1])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_2 = 1;
+			d3.select("circle.region_circle1")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[1])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 2
+
+	// ---------- filter 3
+
+	var checked_3 = 1;
+
+	var regionFilter3 = function (d) {
+		if (checked_3 == 1) {
+
+			checked_3 = 0
+			d3.select("circle.region_circle2")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[2])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_3 = 1;
+			d3.select("circle.region_circle2")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[2])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 3
+
+	// ---------- filter 4
+
+	var checked_4 = 1;
+
+	var regionFilter4 = function (d) {
+		if (checked_4 == 1) {
+
+			checked_4 = 0
+			d3.select("circle.region_circle3")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[3])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_4 = 1;
+			d3.select("circle.region_circle3")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[3])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 4
+
+	// ---------- filter 5
+
+	var checked_5 = 1;
+
+	var regionFilter5 = function (d) {
+		if (checked_5 == 1) {
+
+			checked_5 = 0
+			d3.select("circle.region_circle4")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[4])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_5 = 1;
+			d3.select("circle.region_circle4")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[4])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 5
+
+	// ---------- filter 6
+
+	var checked_6 = 1;
+
+	var regionFilter6 = function (d) {
+		if (checked_6 == 1) {
+
+			checked_6 = 0
+			d3.select("circle.region_circle5")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[5])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_6 = 1;
+			d3.select("circle.region_circle5")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[5])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 6
+
+	// ---------- filter 7
+
+	var checked_7 = 1;
+
+	var regionFilter7 = function (d) {
+		if (checked_7 == 1) {
+
+			checked_7 = 0
+			d3.select("circle.region_circle6")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[6])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_7 = 1;
+			d3.select("circle.region_circle6")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[6])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 7
+
+	// ---------- filter 8
+
+	var checked_8 = 1;
+
+	var regionFilter8 = function (d) {
+		if (checked_8 == 1) {
+
+			checked_8 = 0
+			d3.select("circle.region_circle7")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[7])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_8 = 1;
+			d3.select("circle.region_circle7")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[7])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 8
+
+	// ---------- filter 9
+
+	var checked_9 = 1;
+
+	var regionFilter9 = function (d) {
+		if (checked_9 == 1) {
+
+			checked_9 = 0
+			d3.select("circle.region_circle8")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[8])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_9 = 1;
+			d3.select("circle.region_circle8")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[8])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 9
+
+	// ---------- filter 10
+
+	var checked_10 = 1;
+
+	var regionFilter10 = function (d) {
+		if (checked_10 == 1) {
+
+			checked_10 = 0
+			d3.select("circle.region_circle9")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[9])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_10 = 1;
+			d3.select("circle.region_circle9")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[9])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 10
+
+	// ---------- filter 11
+
+	var checked_11 = 1;
+
+	var regionFilter11 = function (d) {
+		if (checked_11 == 1) {
+
+			checked_11 = 0
+			d3.select("circle.region_circle10")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[10])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_11 = 1;
+			d3.select("circle.region_circle10")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[10])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 11
+
+	// ---------- filter 10
+
+	var checked_12 = 1;
+
+	var regionFilter12 = function (d) {
+		if (checked_12 == 1) {
+
+			checked_10 = 0
+			d3.select("circle.region_circle11")
+				.transition()
+				.duration(200)
+				.attr("r", 5)
+				.style("fill", back_col);
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[11])
+				.style("visibility", "hidden");
+		}
+
+		else {
+			checked_12 = 1;
+			d3.select("circle.region_circle11")
+				.transition()
+				.duration(200)
+				.attr("r", 6)
+				.style("fill", d => regionScale(d))
+
+			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
+				.filter(d => d.region == regions_name[11])
+				.style("visibility", "visible");
+		}
+
+	}; // --------- end of filter 10
+
+	// Assign filter functions to region circles
+
+	d3.select("circle.region_circle0")
+		.on("mousedown", regionFilter1);
+	d3.select("circle.region_circle1")
+		.on("mousedown", regionFilter2);
+	d3.select("circle.region_circle2")
+		.on("mousedown", regionFilter3);
+	d3.select("circle.region_circle3")
+		.on("mousedown", regionFilter4);
+	d3.select("circle.region_circle4")
+		.on("mousedown", regionFilter5);
+	d3.select("circle.region_circle5")
+		.on("mousedown", regionFilter6);
+	d3.select("circle.region_circle6")
+		.on("mousedown", regionFilter7);
+	d3.select("circle.region_circle7")
+		.on("mousedown", regionFilter8);
+	d3.select("circle.region_circle8")
+		.on("mousedown", regionFilter9);
+	d3.select("circle.region_circle9")
+		.on("mousedown", regionFilter10);
+	d3.select("circle.region_circle10")
+		.on("mousedown", regionFilter11);
+	d3.select("circle.region_circle11")
+		.on("mousedown", regionFilter12);
 }
