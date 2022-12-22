@@ -37,7 +37,7 @@ var regions_cols = [
 	'#e6194B', '#3cb44b', '#ffe119',
 	'#4363d8', '#f58231', '#42d4f4',
 	'#f032e6', '#fabed4', '#469990',
-	'#dcbeff', '#9A6324', '#fffac8'
+	'#dcbeff', '#9A6324', 'darkred'
 ];
 
 // -------------------------------------- Main settings
@@ -1494,7 +1494,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[0])
+				.filter(d => d.regions == regions_name[0])
 				.style("visibility", "hidden");
 
 		}
@@ -1508,7 +1508,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[0])
+				.filter(d => d.regions == regions_name[0])
 				.style("visibility", "visible");
 
 		}
@@ -1530,7 +1530,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[1])
+				.filter(d => d.regions == regions_name[1])
 				.style("visibility", "hidden");
 		}
 
@@ -1543,7 +1543,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[1])
+				.filter(d => d.regions == regions_name[1])
 				.style("visibility", "visible");
 		}
 
@@ -1564,7 +1564,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[2])
+				.filter(d => d.regions== regions_name[2])
 				.style("visibility", "hidden");
 		}
 
@@ -1577,7 +1577,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[2])
+				.filter(d => d.regions== regions_name[2])
 				.style("visibility", "visible");
 		}
 
@@ -1598,7 +1598,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[3])
+				.filter(d => d.regions== regions_name[3])
 				.style("visibility", "hidden");
 		}
 
@@ -1611,7 +1611,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[3])
+				.filter(d => d.regions== regions_name[3])
 				.style("visibility", "visible");
 		}
 
@@ -1632,7 +1632,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[4])
+				.filter(d => d.regions== regions_name[4])
 				.style("visibility", "hidden");
 		}
 
@@ -1645,7 +1645,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[4])
+				.filter(d => d.regions== regions_name[4])
 				.style("visibility", "visible");
 		}
 
@@ -1666,7 +1666,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[5])
+				.filter(d => d.regions== regions_name[5])
 				.style("visibility", "hidden");
 		}
 
@@ -1679,7 +1679,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[5])
+				.filter(d => d.regions== regions_name[5])
 				.style("visibility", "visible");
 		}
 
@@ -1700,7 +1700,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[6])
+				.filter(d => d.regions== regions_name[6])
 				.style("visibility", "hidden");
 		}
 
@@ -1713,7 +1713,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[6])
+				.filter(d => d.regions== regions_name[6])
 				.style("visibility", "visible");
 		}
 
@@ -1734,7 +1734,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[7])
+				.filter(d => d.regions== regions_name[7])
 				.style("visibility", "hidden");
 		}
 
@@ -1747,7 +1747,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[7])
+				.filter(d => d.regions== regions_name[7])
 				.style("visibility", "visible");
 		}
 
@@ -1768,7 +1768,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[8])
+				.filter(d => d.regions== regions_name[8])
 				.style("visibility", "hidden");
 		}
 
@@ -1781,7 +1781,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[8])
+				.filter(d => d.regions== regions_name[8])
 				.style("visibility", "visible");
 		}
 
@@ -1802,7 +1802,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[9])
+				.filter(d => d.regions== regions_name[9])
 				.style("visibility", "hidden");
 		}
 
@@ -1815,7 +1815,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[9])
+				.filter(d => d.regions== regions_name[9])
 				.style("visibility", "visible");
 		}
 
@@ -1836,7 +1836,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[10])
+				.filter(d => d.regions== regions_name[10])
 				.style("visibility", "hidden");
 		}
 
@@ -1849,7 +1849,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[10])
+				.filter(d => d.regions== regions_name[10])
 				.style("visibility", "visible");
 		}
 
@@ -1862,7 +1862,7 @@ var story = svg
 	var regionFilter12 = function (d) {
 		if (checked_12 == 1) {
 
-			checked_10 = 0
+			checked_12 = 0
 			d3.select("circle.region_circle11")
 				.transition()
 				.duration(200)
@@ -1870,7 +1870,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[11])
+				.filter(d => d.regions== regions_name[11])
 				.style("visibility", "hidden");
 		}
 
@@ -1883,7 +1883,7 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.region == regions_name[11])
+				.filter(d => d.regions== regions_name[11])
 				.style("visibility", "visible");
 		}
 
