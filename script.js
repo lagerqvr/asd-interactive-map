@@ -1,7 +1,7 @@
 const geoFile = "https://raw.githubusercontent.com/sandravizz/Analytical-System-Design-D3.js/main/Datasets/world_countries_geojson.geojson";
 const dataFile = "https://raw.githubusercontent.com/lagerqvr/asd-interactive-map/main/globalterrorismdb_0522dist%20-%202015-2020.csv";
 
-// -------------------------------------- color variables
+// -------------------------------------- Color variables
 
 var country_color = "#2C3E50";
 var main_col = "green";
@@ -63,7 +63,7 @@ var contour_dots_time1 = 600;
 var contour_dots_time2 = 1000;
 var contour_dots_delay = 3;
 
-// -------------------------------------- div for svg
+// -------------------------------------- Div for svg
 
 var div_main = d3.select("body")
 	.append("div")
@@ -71,7 +71,7 @@ var div_main = d3.select("body")
 	// .style("border", "10px solid white")
 	.style("margin", "30px auto");
 
-// -------------------------------------- svg board
+// -------------------------------------- SVG board
 
 var svg = div_main.append('svg')
 	.attr('width', width + margin.left + margin.right)
@@ -117,7 +117,7 @@ btn.addEventListener("click", () => {
 			break;
 		}
 	}
-	// show the output:
+	// Show the output:
 	output.innerText = selectedYear ? `You selected ${selectedYear}` : `You haven't selected any year`;
 
 	// Store global objects here
@@ -214,38 +214,38 @@ function draw(map, dataset) {
 	d3.select("svg").remove();
 
 	var svg = div_main.append('svg')
-	.attr('width', width + margin.left + margin.right)
-	.attr('height', height + margin.top + margin.bottom)
-	.style("display", "block")
-	.style("margin", "0px auto")
-	// .style("border", "2px solid grey") 
-	.style("background", back_color)
-	.append('g')
-	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+		.attr('width', width + margin.left + margin.right)
+		.attr('height', height + margin.top + margin.bottom)
+		.style("display", "block")
+		.style("margin", "0px auto")
+		// .style("border", "2px solid grey") 
+		.style("background", back_color)
+		.append('g')
+		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-// Title
-var story = svg
-	.append('image')
-	.attr('xlink:href', "https://user-images.githubusercontent.com/5682399/207156647-5ad0cabf-72b9-4a50-86b2-4b374039a078.png")
-	.attr('width', 480)
-	.attr('height', 80)
-	.style("opacity", 1)
-	.attr("transform", "translate(-20,-80)");
+	// Title
+	var story = svg
+		.append('image')
+		.attr('xlink:href', "https://user-images.githubusercontent.com/5682399/207156647-5ad0cabf-72b9-4a50-86b2-4b374039a078.png")
+		.attr('width', 480)
+		.attr('height', 80)
+		.style("opacity", 1)
+		.attr("transform", "translate(-20,-80)");
 
-// Sub-Title
-svg.append('text')
-	.text('“How do you defeat terrorism? Don’t be terrorized.” - Salman Rushdie')
-	.attr("x", -14)
-	.attr("y", -5)
-	.style("font", "14px Times New Roman")
-	.style("opacity", 0.9);
+	// Sub-Title
+	svg.append('text')
+		.text('“How do you defeat terrorism? Don’t be terrorized.” - Salman Rushdie')
+		.attr("x", -14)
+		.attr("y", -5)
+		.style("font", "14px Times New Roman")
+		.style("opacity", 0.9);
 
-var story = svg
-	.append('image')
-	.attr('width', 1160)
-	.attr('height', 170)
-	.style("opacity", 1)
-	.attr("transform", "translate(-20,-110)");
+	var story = svg
+		.append('image')
+		.attr('width', 1160)
+		.attr('height', 170)
+		.style("opacity", 1)
+		.attr("transform", "translate(-20,-110)");
 
 	// Axis scale
 	var timeScale = d3.scaleTime()
@@ -297,7 +297,7 @@ var story = svg
 		.attr("stroke-width", 0.2)
 		.style("fill-opacity", 0);
 
-	// -------------------------------------- dots tooltip
+	// -------------------------------------- Dots tooltip
 
 	var tooltip = div_main.append("div")
 		.attr("class", "tooltip")
@@ -315,7 +315,7 @@ var story = svg
 		.style("line-height", "1")
 		.style("display", "inline");
 
-	// move
+	// Move
 	var mousemove = function (event, d) {
 
 		tooltip
@@ -339,7 +339,7 @@ var story = svg
 
 	}
 
-	// leave
+	// Leave
 	var mouseleave = function (d) {
 
 		tooltip
@@ -349,12 +349,12 @@ var story = svg
 
 	}
 
-	// call the tooltip
+	// Call the tooltip
 	d3.selectAll("circle.contour_circles")
 		.on("mousemove", mousemove)
 		.on("mouseleave", mouseleave);
 
-	// -------------------------------------- country tooltip
+	// -------------------------------------- Country tooltip
 
 	var country_tooltip = div_main.append("div")
 		.attr("class", "country_tooltip")
@@ -372,7 +372,7 @@ var story = svg
 		.style("line-height", "2")
 		.style("display", "inline");
 
-	// move
+	// Move
 	var country_mousemove = function (event, d) {
 		country_tooltip
 			.transition()
@@ -534,7 +534,7 @@ var story = svg
 		.attr("transform", "translate(10,55)");
 
 
-	// draw legend
+	// Draw legend
 	regionLegend.selectAll("g.regions")
 		.data(regions_name)
 		.join("g")
@@ -588,34 +588,34 @@ var story = svg
 		.style("fill", back_color)
 		.style("opacity", 0.0);
 
-	// -------------------------------------- timeline
+	// -------------------------------------- Timeline
 
 	// Draw the Axies
 	svg.append("g").classed("axe", true)
 		.attr("transform", "translate(0 , 910)")
 		.call(timeAxis);
 
-	// axis formatting
+	// Axis formatting
 
-	// format the domain
+	// Format the domain
 	d3.selectAll("g.axe .domain, g.axe g.tick line")
 		.style("stroke", main_col)
 		.style("opacity", 0.2);
 
-	// make centered ticks
+	// Make centered ticks
 	d3.selectAll("g.axe g.tick line")
 		.attr("y1", -3)
 		.attr("y2", 4)
 		.style("opacity", 0.8)
 		.style("stroke", main_col);
 
-	// adjust font size and opacity
+	// Adjust font size and opacity
 	d3.selectAll("g.axe g.tick text")
 		.style("font-size", "8px")
 		.style("color", main_col)
 		.style("opacity", 1);
 
-	// -------------------------------------- circles on timeline
+	// -------------------------------------- Circles on timeline
 
 	// Draw the circles on timeline
 	svg.selectAll("circle.time_circles")
@@ -631,7 +631,7 @@ var story = svg
 		.style("fill", d => colorScale(d.victims))
 		.style("stroke", d => colorScale(d.victims));
 
-	// -------------------------------------- projections on timeline
+	// -------------------------------------- Projections on timeline
 
 	// Draw the projections on timeline
 
@@ -649,13 +649,13 @@ var story = svg
 		.style("stroke-opacity", d => projOpacScale(d.victims))
 		.style("stroke-width", proj_stroke)
 
-	// -------------------------------------- play function
+	// -------------------------------------- Play function
 
-	// play function
+	// Play function
 
 	var play = function (d) {
 
-		// hide button while playing
+		// Hide button while playing
 		d3.select(this)
 			.transition()
 			.duration(2000)
@@ -678,7 +678,7 @@ var story = svg
 			.attr("stroke-width", 0.7)
 			.style("fill-opacity", 0);
 
-		// play projection lines
+		// Play projection lines
 		d3.selectAll("line.time_lines")
 			.style("stroke-width", "0px")
 			.style("stroke-opacity", d => projOpacScale(d.victims))
@@ -691,7 +691,7 @@ var story = svg
 
 			});
 
-		// play main circles
+		// Play main circles
 		d3.selectAll("circle.main_circles")
 			.attr("r", 0)
 			.each(function (d, i) {
@@ -703,7 +703,7 @@ var story = svg
 
 			});
 
-		// play countour circles
+		// Play countour circles
 		d3.selectAll("circle.contour_circles")
 			.attr("r", 0)
 			.each(function (d, i) {
@@ -725,7 +725,7 @@ var story = svg
 					.style("fill-opacity", 0)
 			});
 
-		// play time circles
+		// Play time circles
 		d3.selectAll("circle.time_circles")
 			.attr("r", d => Math.random())
 			.attr("cx", d => timeScale(d.date))
@@ -752,19 +752,19 @@ var story = svg
 
 	// -------------------------------------- Play Button Functions
 
-	// over function
+	// Over function
 	var over = function (d) {
 		d3.select(this)
 			.style("fill", main_col)
 	};
 
-	// move function
+	// Move function
 	var move = function (d) {
 		d3.select(this)
 			.style("fill", main_col)
 	};
 
-	// leave function	
+	// Leave function	
 	var leave = function (d) {
 		d3.select(this)
 			.style("fill", white_col)
@@ -773,7 +773,7 @@ var story = svg
 	// -------------------------------- Speed Buttons Functions
 
 	// 1x
-	// down functions
+	// Down functions
 	var speedDownLow = function (d) {
 		d3.select(this)
 			.transition()
@@ -806,7 +806,7 @@ var story = svg
 	};
 
 	// 2x
-	// down functions
+	// Down functions
 	var speedDownMedium = function (d) {
 		d3.select(this)
 			.transition()
@@ -838,7 +838,7 @@ var story = svg
 	};
 
 	// 4x
-	// down functions
+	// Down functions
 	var speedDownHigh = function (d) {
 		d3.select(this)
 			.transition()
@@ -871,8 +871,8 @@ var story = svg
 
 	// -------------------------------- on/off Projection Functions
 
-	// on Projection
-	// down functions
+	// On Projection
+	// Down functions
 	var onProj = function (d) {
 		d3.select(this)
 			.transition()
@@ -906,8 +906,8 @@ var story = svg
 
 	};
 
-	// off Projection
-	// down functions
+	// Off Projection
+	// Down functions
 	var offProj = function (d) {
 		d3.select(this)
 			.transition()
@@ -944,8 +944,8 @@ var story = svg
 
 	// -------------------------------- on/off Categories Buttons Functions
 
-	// on
-	// down functions
+	// On
+	// Down functions
 	var onDown = function (d) {
 		d3.select(this)
 			.transition()
@@ -1023,8 +1023,8 @@ var story = svg
 
 	};
 
-	// off
-	// down functions
+	// Off
+	// Down functions
 	var offDown = function (d) {
 		d3.select(this)
 			.transition()
@@ -1090,10 +1090,10 @@ var story = svg
 
 	};
 
-	// -------------------------------- region / cause Buttons Functions
+	// -------------------------------- Region / Cause Buttons Functions
 
-	// region
-	// down functions
+	// Region
+	// Down functions
 	var regionDown = function (d) {
 		d3.select(this)
 			.transition()
@@ -1142,12 +1142,12 @@ var story = svg
 
 	// -------------------------------- on/off Categories Buttons Functions
 
-	// add g element button
+	// Add G element button
 	var startButton = svg.append("g")
 		.classed("start", true)
 		.attr("transform", "translate(-4,904.5)");
 
-	// start circle
+	// Start circle
 	startButton.append("circle")
 		.classed("start_circle", true)
 		.attr("cx", 4.5)
@@ -1158,7 +1158,7 @@ var story = svg
 		.style("fill", white_col)
 		.style("fill-opacity", 0);
 
-	// start button
+	// Start button
 	startButton.append("polygon")
 		.classed("start_polygon", true)
 		.attr("points", "0,0 12,6 0,12")
@@ -1171,7 +1171,7 @@ var story = svg
 		.on("mouseleave", leave)
 		.on("mousemove", move);
 
-	// start text
+	// Start text
 	startButton.append("text")
 		.classed("start_text", true)
 		.attr("x", -4)
@@ -1181,9 +1181,9 @@ var story = svg
 		.style("font-size", "8px")
 		.attr("transform", "translate(0,-40)");
 
-	// -------------------------------------- end circle
+	// -------------------------------------- End circle
 
-	// end circle
+	// End circle
 	svg.append("circle")
 		.classed("end_circle", true)
 		.attr("cx", timeScale(parseTime("26-Jun-2019")))
@@ -1192,14 +1192,14 @@ var story = svg
 		.style("stroke", blue_col)
 		.style("fill", white_col);
 
-	// -------------------------------------- speed button
+	// -------------------------------------- Speed button
 
-	// speed button
+	// Speed button
 	var speedButton = controller.append("g")
 		.classed("speed_button", true)
 		.attr("transform", "translate(17,-70)");
 
-	// speed text
+	// Speed text
 	speedButton.append("text")
 		.classed("start_text", true)
 		.attr("x", 0)
@@ -1237,8 +1237,8 @@ var story = svg
 		.style("font-size", "8px")
 		.attr("transform", "translate(-20,3)");
 
-	// speed circles
-	// low
+	// Speed circles
+	// Low
 	speedButton.append("circle")
 		.classed("low_button", true)
 		.attr("cx", 34.5)
@@ -1250,7 +1250,7 @@ var story = svg
 		.style("fill-opacity", 1)
 		.style("stroke-opacity", 0.8)
 		.on("mousedown", speedDownLow);
-	// medium
+	// Medium
 	speedButton.append("circle")
 		.classed("medium_button", true)
 		.attr("cx", 64)
@@ -1263,7 +1263,7 @@ var story = svg
 		.style("stroke-opacity", 1)
 		.on("mousedown", speedDownMedium);
 
-	// high
+	// High
 	speedButton.append("circle")
 		.classed("high_button", true)
 		.attr("cx", 94)
@@ -1276,12 +1276,12 @@ var story = svg
 		.on("mousedown", speedDownHigh);
 
 	// -------------------------------------- projections ON / OFF Button
-	// projection button
+	// Projection button
 	var projectionButton = controller.append("g")
 		.classed("proj_button", true)
 		.attr("transform", "translate(0,-30)");
 
-	// title
+	// Title
 	projectionButton.append("text")
 		.classed("proj_text", true)
 		.attr("x", 0)
@@ -1309,7 +1309,7 @@ var story = svg
 		.style("font-size", "8px")
 		.attr("transform", "translate(-2,0)");
 
-	// switch circles
+	// Switch circles
 	// ON
 	projectionButton.append("circle")
 		.classed("on_proj", true)
@@ -1336,13 +1336,13 @@ var story = svg
 		.style("stroke-opacity", 0.8)
 		.on("mousedown", offProj);
 
-	// -------------------------------------- switch ON / OFF Button
-	// switch button
+	// -------------------------------------- Switch ON / OFF Button
+	// Switch button
 	var switchButton = controller.append("g")
 		.classed("cat_button", true)
 		.attr("transform", "translate(0,0)");
 
-	// title
+	// Title
 	switchButton.append("text")
 		.classed("cat_text", true)
 		.attr("x", 0)
@@ -1370,7 +1370,7 @@ var story = svg
 		.style("font-size", "8px")
 		.attr("transform", "translate(-2,0)");
 
-	// switch circles
+	// Switch circles
 	// ON
 	switchButton.append("circle")
 		.classed("on_button", true)
@@ -1398,12 +1398,12 @@ var story = svg
 		.on("mousedown", offDown);
 
 	// -------------------------------------- by Region / Cause switch button
-	// categories button
+	// Categories button
 	var catButton = controller.append("g")
 		.classed("switch_button", true)
 		.attr("transform", "translate(0,30)");
 
-	// cause text
+	// Cause text
 	catButton.append("text")
 		.classed("region_cause_text", true)
 		.attr("x", 51)
@@ -1413,7 +1413,7 @@ var story = svg
 		.style("font-size", "8px")
 		.attr("transform", "translate(-2,0)");
 
-	// region circle
+	// Region circle
 	catButton.append("circle")
 		.classed("region_button", true)
 		.attr("cx", 38)
@@ -1425,9 +1425,9 @@ var story = svg
 		.style("fill", back_col)
 		.style("fill-opacity", 1)
 		.on("mousedown", regionDown);
-	// -------------------------------------- join lines
+	// -------------------------------------- Join lines
 
-	// join lines array
+	// Join lines array
 	var p1_1 = "51.5,-70 ";
 	var p1_2 = "81,-70 ";
 	var p1_3 = "111,-70 ";
@@ -1448,7 +1448,7 @@ var story = svg
 	var array1 = p1 + p2 + p3;
 	var array2 = p3_2 + p4 + p5 + p6;
 
-	// polyline1
+	// Polyline1
 	var joinLines1 = controller
 		.append("polyline")
 		.classed("join_line", true)
@@ -1459,7 +1459,7 @@ var story = svg
 		.lower()
 		.attr("transform", "translate(0,0)");
 
-	// polyline1
+	// Polyline1
 	var joinLines2 = controller
 		.append("polyline")
 		.classed("join_line", true)
@@ -1479,7 +1479,7 @@ var story = svg
 
 	// Filters for the regions
 
-	// ---------- filter 1
+	// ---------- Filter 1
 
 	var checked_1 = 1;
 
@@ -1513,9 +1513,9 @@ var story = svg
 
 		}
 
-	}; // --------- end of filter 1
+	}; // --------- End of filter 1
 
-	// ---------- filter 2
+	// ---------- Filter 2
 
 	var checked_2 = 1;
 
@@ -1547,9 +1547,9 @@ var story = svg
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 2
+	}; // --------- End of filter 2
 
-	// ---------- filter 3
+	// ---------- Filter 3
 
 	var checked_3 = 1;
 
@@ -1564,7 +1564,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[2])
+				.filter(d => d.regions == regions_name[2])
 				.style("visibility", "hidden");
 		}
 
@@ -1577,13 +1577,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[2])
+				.filter(d => d.regions == regions_name[2])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 3
+	}; // --------- End of filter 3
 
-	// ---------- filter 4
+	// ---------- Filter 4
 
 	var checked_4 = 1;
 
@@ -1598,7 +1598,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[3])
+				.filter(d => d.regions == regions_name[3])
 				.style("visibility", "hidden");
 		}
 
@@ -1611,13 +1611,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[3])
+				.filter(d => d.regions == regions_name[3])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 4
+	}; // --------- End of filter 4
 
-	// ---------- filter 5
+	// ---------- Filter 5
 
 	var checked_5 = 1;
 
@@ -1632,7 +1632,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[4])
+				.filter(d => d.regions == regions_name[4])
 				.style("visibility", "hidden");
 		}
 
@@ -1645,13 +1645,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[4])
+				.filter(d => d.regions == regions_name[4])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 5
+	}; // --------- End of filter 5
 
-	// ---------- filter 6
+	// ---------- Filter 6
 
 	var checked_6 = 1;
 
@@ -1666,7 +1666,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[5])
+				.filter(d => d.regions == regions_name[5])
 				.style("visibility", "hidden");
 		}
 
@@ -1679,13 +1679,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[5])
+				.filter(d => d.regions == regions_name[5])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 6
+	}; // --------- End of filter 6
 
-	// ---------- filter 7
+	// ---------- Filter 7
 
 	var checked_7 = 1;
 
@@ -1700,7 +1700,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[6])
+				.filter(d => d.regions == regions_name[6])
 				.style("visibility", "hidden");
 		}
 
@@ -1713,13 +1713,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[6])
+				.filter(d => d.regions == regions_name[6])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 7
+	}; // --------- End of filter 7
 
-	// ---------- filter 8
+	// ---------- Filter 8
 
 	var checked_8 = 1;
 
@@ -1734,7 +1734,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[7])
+				.filter(d => d.regions == regions_name[7])
 				.style("visibility", "hidden");
 		}
 
@@ -1747,13 +1747,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[7])
+				.filter(d => d.regions == regions_name[7])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 8
+	}; // --------- End of filter 8
 
-	// ---------- filter 9
+	// ---------- Filter 9
 
 	var checked_9 = 1;
 
@@ -1768,7 +1768,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[8])
+				.filter(d => d.regions == regions_name[8])
 				.style("visibility", "hidden");
 		}
 
@@ -1781,13 +1781,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[8])
+				.filter(d => d.regions == regions_name[8])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 9
+	}; // --------- End of filter 9
 
-	// ---------- filter 10
+	// ---------- Filter 10
 
 	var checked_10 = 1;
 
@@ -1802,7 +1802,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[9])
+				.filter(d => d.regions == regions_name[9])
 				.style("visibility", "hidden");
 		}
 
@@ -1815,13 +1815,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[9])
+				.filter(d => d.regions == regions_name[9])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 10
+	}; // --------- End of filter 10
 
-	// ---------- filter 11
+	// ---------- Filter 11
 
 	var checked_11 = 1;
 
@@ -1836,7 +1836,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[10])
+				.filter(d => d.regions == regions_name[10])
 				.style("visibility", "hidden");
 		}
 
@@ -1849,13 +1849,13 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[10])
+				.filter(d => d.regions == regions_name[10])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 11
+	}; // --------- End of filter 11
 
-	// ---------- filter 10
+	// ---------- Filter 10
 
 	var checked_12 = 1;
 
@@ -1870,7 +1870,7 @@ var story = svg
 				.style("fill", back_col);
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[11])
+				.filter(d => d.regions == regions_name[11])
 				.style("visibility", "hidden");
 		}
 
@@ -1883,11 +1883,11 @@ var story = svg
 				.style("fill", d => regionScale(d))
 
 			d3.selectAll("circle.main_circles, circle.contour_circles, circle.time_circles, line.time_lines")
-				.filter(d => d.regions== regions_name[11])
+				.filter(d => d.regions == regions_name[11])
 				.style("visibility", "visible");
 		}
 
-	}; // --------- end of filter 10
+	}; // --------- End of filter 10
 
 	// Assign filter functions to region circles
 

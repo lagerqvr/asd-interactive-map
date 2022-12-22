@@ -1,52 +1,53 @@
 <!doctype html>
 <html>
 
-<head>
-    <meta charset="UTF-8">
-    <title>The War On Terrorism</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💣</text></svg>">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>The War On Terrorism</title>
+        <link rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💣</text></svg>">
+    </head>
 
-<style>
-    * {
-        /* overflow: hidden !important; */
-    }
-</style>
+    <style>
+        * {
+            /* overflow: hidden !important; */
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
 
-<body>
-    <p>Select year to display:</p>
-    <div>
-        <input type="radio" name="year_val" value="2015" id="year_val_2015">
-        <label for="year_val_2015">2015</label>
-    </div>
-    <div>
-        <input type="radio" name="year_val" value="2016" id="year_val_2016">
-        <label for="year_val_2016">2016</label>
-    </div>
-    <div>
-        <input type="radio" name="year_val" value="2017" id="year_val_2017">
-        <label for="year_val_2017">2017</label>
-    </div>
-    <div>
-        <input type="radio" name="year_val" value="2018" id="year_val_2018">
-        <label for="year_val_2018">2018</label>
-    </div>
-    <div>
-        <input type="radio" name="year_val" value="2019" id="year_val_2019">
-        <label for="year_val_2019">2019</label>
-    </div>
-    <div>
-        <input type="radio" name="year_val" value="2020" id="year_val_2020">
-        <label for="year_val_2020">2020</label>
-    </div>
-    <p>
-        <button id="btn">Select year data to display</button>
-    </p>
-    <p id="output"></p>
-</body>
+    <body>
+        <p>Select year to display:</p>
+        <div>
+            <input type="radio" name="year_val" value="2015" id="year_val_2015">
+            <label for="year_val_2015">2015</label>
+        </div>
+        <div>
+            <input type="radio" name="year_val" value="2016" id="year_val_2016">
+            <label for="year_val_2016">2016</label>
+        </div>
+        <div>
+            <input type="radio" name="year_val" value="2017" id="year_val_2017">
+            <label for="year_val_2017">2017</label>
+        </div>
+        <div>
+            <input type="radio" name="year_val" value="2018" id="year_val_2018">
+            <label for="year_val_2018">2018</label>
+        </div>
+        <div>
+            <input type="radio" name="year_val" value="2019" id="year_val_2019">
+            <label for="year_val_2019">2019</label>
+        </div>
+        <div>
+            <input type="radio" name="year_val" value="2020" id="year_val_2020">
+            <label for="year_val_2020">2020</label>
+        </div>
+        <p>
+            <button id="btn">Display</button>
+        </p>
+        <p id="output"></p>
+    </body>
 
-<script src="https://d3js.org/d3.v6.min.js"></script>
-<script src="script.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="script.js"></script>
 
 </html>
