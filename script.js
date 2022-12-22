@@ -14,7 +14,7 @@ var back_color = "lightgray";
 var country_over_col = "#BDC3C7";
 var tooltip_col = "white";
 var blue_col = "#4242ff";
-var button_over_col = "#010c16";
+var button_over_col = "green";
 var back_col = "white";
 
 var regions_name = [
@@ -44,7 +44,6 @@ var regions_cols = [
 
 const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
 const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-//console.log(vw, vh)
 
 // Margin
 var margin = { top: 65, right: 50, bottom: 20, left: 50 },
@@ -54,7 +53,6 @@ var margin = { top: 65, right: 50, bottom: 20, left: 50 },
 // Background
 d3.select("body")
 	.style("background", back_color)
-	/* .style("font-family", "Arial, Geneva, sans-serif") */
 	.attr("height", height);
 
 // Time variables
@@ -84,7 +82,6 @@ var svg = div_main.append('svg')
 	.style("background", back_color)
 	.append('g')
 	.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
 
 // Title
 var story = svg
@@ -123,8 +120,6 @@ btn.addEventListener("click", () => {
 	// show the output:
 	output.innerText = selectedYear ? `You selected ${selectedYear}` : `You haven't selected any year`;
 
-
-
 	// Store global objects here
 	var map = {};
 	var dataset = {};
@@ -153,7 +148,6 @@ btn.addEventListener("click", () => {
 		.then(function ([shapes, data]) {
 			map.features = shapes.features;
 			dataset = data;
-			//console.log(dataset)
 			draw(map, dataset);
 
 		});
@@ -317,9 +311,6 @@ function draw(map, dataset) {
 			.style("font-size", "5px")
 			.style("font-family", "Arial")
 			.style("color", "grey");
-
-		//console.log(d3.select(this).attr('cx'), d3.select(this).attr('cy'));
-		//console.log(d3.select(this).style('stroke-opacity'));
 
 	}
 
@@ -619,7 +610,7 @@ function draw(map, dataset) {
 
 	// Draw the projections on timeline
 
-	var proj_stroke = "0.05px";
+	var proj_stroke = "0.00px";
 
 	svg.selectAll("line.time_lines")
 		.data(dataset)
@@ -739,14 +730,12 @@ function draw(map, dataset) {
 	// over function
 	var over = function (d) {
 		d3.select(this)
-			//.style("stroke", white_col)
 			.style("fill", main_col)
 	};
 
 	// move function
 	var move = function (d) {
 		d3.select(this)
-			//.style("stroke", white_col)
 			.style("fill", main_col)
 	};
 
@@ -754,7 +743,6 @@ function draw(map, dataset) {
 	var leave = function (d) {
 		d3.select(this)
 			.style("fill", white_col)
-		//.style("stroke", main_col)
 	};
 
 	// -------------------------------- Speed Buttons Functions
@@ -887,7 +875,7 @@ function draw(map, dataset) {
 			.duration(500)
 			.attr("points", array1)
 
-		proj_stroke = "0.05px";
+		proj_stroke = "0.1px";
 		d3.selectAll("line.time_lines")
 			.style("stroke-width", proj_stroke)
 
@@ -1032,14 +1020,12 @@ function draw(map, dataset) {
 		d3.selectAll(".join_line")
 			.transition()
 			.duration(500)
-			.style("opacity", 0)
-		//.style("visibility", "hidden");
+			.style("opacity", 0);
 
 		catButton
 			.transition()
 			.duration(1000)
-			.style("opacity", 0)
-		//.style("visibility", "hidden");
+			.style("opacity", 0);
 
 		d3.select(".region_button")
 			.transition()
@@ -1077,7 +1063,6 @@ function draw(map, dataset) {
 		d3.selectAll("line.time_lines")
 			.style("stroke", d => projColorScale(d.victims))
 
-
 	};
 
 	// -------------------------------- region / cause Buttons Functions
@@ -1107,7 +1092,6 @@ function draw(map, dataset) {
 			.delay(500)
 			.style("opacity", 1)
 
-
 		d3.selectAll("circle.main_circles")
 			.style("stroke", d => regionScale(d.regions))
 			.style("fill", d => regionScale(d.regions));
@@ -1130,7 +1114,6 @@ function draw(map, dataset) {
 		regionLegend.raise();
 
 	};
-
 
 	// -------------------------------- on/off Categories Buttons Functions
 
@@ -1183,7 +1166,6 @@ function draw(map, dataset) {
 		.attr("r", 2)
 		.style("stroke", blue_col)
 		.style("fill", white_col);
-
 
 	// -------------------------------------- speed button
 
@@ -1239,7 +1221,7 @@ function draw(map, dataset) {
 		.attr("r", 5)
 		.style("stroke", white_col)
 		.style("stroke-width", "2px")
-		.style("fill", back_col)
+		.style("fill", button_over_col)
 		.style("fill-opacity", 1)
 		.style("stroke-opacity", 0.8)
 		.on("mousedown", speedDownLow);
@@ -1249,11 +1231,9 @@ function draw(map, dataset) {
 		.attr("cx", 64)
 		.attr("cy", 0)
 		.attr("r", 5)
-		.style("fill", button_over_col)
+		.style("fill", back_col)
 		.style("fill-opacity", 1)
-		.style("fill", button_over_col)
 		.style("stroke", moderate_col)
-
 		.attr("stroke-width", 0.7)
 		.style("stroke-opacity", 1)
 		.on("mousedown", speedDownMedium);
@@ -1398,7 +1378,6 @@ function draw(map, dataset) {
 		.classed("switch_button", true)
 		.attr("transform", "translate(0,30)");
 
-
 	// cause text
 	catButton.append("text")
 		.classed("region_cause_text", true)
@@ -1408,8 +1387,6 @@ function draw(map, dataset) {
 		.style("fill", main_col)
 		.style("font-size", "8px")
 		.attr("transform", "translate(-2,0)");
-
-
 
 	// region circle
 	catButton.append("circle")
@@ -1439,12 +1416,12 @@ function draw(map, dataset) {
 	var p6 = "10,190";
 
 	var p1 = p1_1;
-	var p2 = p2_1;
+	var p2 = p2_2;
 	var p3 = p3_2;
 	var p4 = p4_1;
 
 	var array1 = p1 + p2 + p3;
-	var array2 = p3_1 + p4 + p5 + p6;
+	var array2 = p3_2 + p4 + p5 + p6;
 
 	// polyline1
 	var joinLines1 = controller
@@ -1467,13 +1444,11 @@ function draw(map, dataset) {
 		.style("stroke-width", 0.5)
 		.lower()
 		.attr("transform", "translate(0,0)");
-	/*
-		d3.selectAll("circle.main_circles")
-			.style("stroke", d => regionScale(d.regions))
-			.style("fill", d => regionScale(d.regions));
-	
-		d3.selectAll("circle.time_circles")
-			.style("stroke", d => regionScale(d.regions))
-			.style("fill", d => regionScale(d.regions));
-	*/
+
+	catButton
+		.style("opacity", 0);
+	regionLegend
+		.style("opacity", 0);
+	joinLines2
+		.style("opacity", 0)
 }
