@@ -110,7 +110,7 @@ var story = svg
 const btn = document.querySelector('#btn');
 const radioButtons = document.querySelectorAll('input[name="year_val"]');
 btn.addEventListener("click", () => {
-	let selectedYear = 2015;
+	let selectedYear = "";
 	for (const radioButton of radioButtons) {
 		if (radioButton.checked) {
 			selectedYear = radioButton.value;
