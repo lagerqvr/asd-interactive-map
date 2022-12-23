@@ -48,7 +48,7 @@ const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeig
 // Margin
 var margin = { top: 65, right: 50, bottom: 20, left: 50 },
 	width = vw - margin.left - margin.right, // 2000
-	height = vh - margin.top - margin.bottom; // 1040
+	height = vh + 350 - margin.top - margin.bottom; // 1040
 
 // Background
 d3.select("body")
@@ -154,8 +154,8 @@ btn.addEventListener("click", () => {
 
 });
 const projection = d3.geoNaturalEarth1()
-	.scale(160)
-	.translate([(width / 2) - 140, (height / 2) + 10]);
+	.scale(170)
+	.translate([(width / 2) - 140, (height / 2) - 140]); // + 10
 
 // Path generator 
 const geoPath = d3.geoPath()
@@ -184,7 +184,7 @@ var opacityScale = d3.scaleLinear()
 // Projections Opacity Scale
 var projOpacScale = d3.scaleLinear()
 	.domain([0, 1000])
-	.range([0.1, 0.9]); // when using colors the scale has to start at 0.4
+	.range([0.1, 0.9]); // When using colors the scale has to start at 0.4
 
 // Projection Color Scale
 var projColorScale = d3.scaleLinear()
@@ -1146,7 +1146,7 @@ function draw(map, dataset) {
 	// Add G element button
 	var startButton = svg.append("g")
 		.classed("start", true)
-		.attr("transform", "translate(-4,904.5)");
+		.attr("transform", "translate(-4, 904.5)");
 
 	// Start circle
 	startButton.append("circle")
