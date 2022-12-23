@@ -87,7 +87,7 @@ var svg = div_main.append('svg')
 var story = svg
 	.append('image')
 	.attr('xlink:href', "https://user-images.githubusercontent.com/5682399/207156647-5ad0cabf-72b9-4a50-86b2-4b374039a078.png")
-	.attr('width', 480)
+	.attr('width', 480) // 480
 	.attr('height', 80)
 	.style("opacity", 1)
 	.attr("transform", "translate(-20,-80)");
@@ -154,7 +154,7 @@ btn.addEventListener("click", () => {
 
 });
 const projection = d3.geoNaturalEarth1()
-	.scale(200)
+	.scale(160)
 	.translate([(width / 2) - 140, (height / 2) + 10]);
 
 // Path generator 
@@ -399,7 +399,7 @@ function draw(map, dataset) {
 			.style("fill", country_over_col)
 			.style("fill-opacity", 0.6)
 			.style("stroke-opacity", 1)
-			.style("stroke", moderate_col);
+			.style("stroke", "green");
 
 	}
 
@@ -421,7 +421,7 @@ function draw(map, dataset) {
 	// Menu
 	var controller = svg.append("g")
 		.classed("controller", true)
-		.attr("transform", "translate(1820,350)");
+		.attr("transform", "translate(1000,200)"); // 1820, 350
 
 	// Speed button
 	var legendTitle = controller.append("g")
@@ -434,6 +434,7 @@ function draw(map, dataset) {
 		.html("Controls & Legend")
 		.style("fill", main_col)
 		.style("font-size", "10px")
+		.style("font-weight", "700")
 		.style("opacity", 0.6)
 		.attr("transform", "translate(-20,3)");
 
