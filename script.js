@@ -10,7 +10,7 @@ var light_col = "#64DD17";
 var moderate_col = "#64DD17";
 var dark_col = "#af0259";
 var border_color = "#2C3E50";
-var back_color = "lightgray";
+var back_color = "white";
 var country_over_col = "#BDC3C7";
 var tooltip_col = "white";
 var blue_col = "#4242ff";
@@ -42,13 +42,13 @@ var regions_cols = [
 
 // -------------------------------------- Main settings
 
-const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0)
-const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
+const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) * 0.9
+const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) * 0.9
 
 // Margin
 var margin = { top: 65, right: 50, bottom: 20, left: 50 },
-	width = 2000 - margin.left - margin.right,
-	height = 1040 - margin.top - margin.bottom;
+	width = vw - margin.left - margin.right, // 2000
+	height = vh - margin.top - margin.bottom; // 1040
 
 // Background
 d3.select("body")
