@@ -48,7 +48,7 @@ const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeig
 // Margin
 var margin = { top: 65, right: 50, bottom: 20, left: 50 },
 	width = vw - margin.left - margin.right, // 2000
-	height = vh + 350 - margin.top - margin.bottom; // 1040
+	height = vh + 200 - margin.top - margin.bottom; // 1040 / + 350
 
 // Background
 d3.select("body")
@@ -593,7 +593,7 @@ function draw(map, dataset) {
 
 	// Draw the Axies
 	svg.append("g").classed("axe", true)
-		.attr("transform", "translate(0 , 910)")
+		.attr("transform", "translate(0, 705)") // Move the axis to the bottom / 0, 910
 		.call(timeAxis);
 
 	// Axis formatting
@@ -624,7 +624,7 @@ function draw(map, dataset) {
 		.enter().append("circle")
 		.classed("time_circles", true)
 		.attr("cx", d => timeScale(d.date))
-		.attr("cy", d => 870 + ((d.random) * 80))
+		.attr("cy", d => 665 + ((d.random) * 80)) // 870
 		.attr("r", d => areaScale(d.victims))
 		.attr("stroke-width", 0.4)
 		.style("stroke-opacity", d => opacityScale(d.victims) + 0.1)
@@ -1146,7 +1146,7 @@ function draw(map, dataset) {
 	// Add G element button
 	var startButton = svg.append("g")
 		.classed("start", true)
-		.attr("transform", "translate(-4, 904.5)");
+		.attr("transform", "translate(-4, 700)"); // -4, 904.5
 
 	// Start circle
 	startButton.append("circle")
